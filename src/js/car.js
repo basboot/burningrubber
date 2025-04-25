@@ -1,4 +1,4 @@
-import {Actor, clamp, CollisionType, DegreeOfFreedom, Shape, vec} from "excalibur";
+import {Actor, clamp, CollisionType, DegreeOfFreedom, RotationType, Shape, vec} from "excalibur";
 import { CarSprites } from "./resources";
 import { Obstacle } from "./obstacle"; // Import the Obstacle class
 
@@ -71,6 +71,8 @@ export class Car extends Actor {
       this.vel.x = 0;
       this.vel.y = 0;
     }
+
+    this.rotation = this.vel.x / 1000;
   }
 
   handleObstacleCollision(obstacle) {
