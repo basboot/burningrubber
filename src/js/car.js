@@ -1,9 +1,9 @@
-import {Actor, clamp, Keys, Vector} from "excalibur";
+import {Actor, clamp, CollisionType, DegreeOfFreedom, Shape, vec} from "excalibur";
 import { CarSprites } from "./resources";
 
 export class Car extends Actor {
   constructor(carType, initialPosition, initialVelocity, minSpeed, maxSpeed) {
-    super();
+    super({ collisionType: CollisionType.Active });
     this.carType = carType; // Store the car type
     this.pos = initialPosition; // Set initial position
     this.vel = initialVelocity; // Set initial velocity
@@ -14,14 +14,29 @@ export class Car extends Actor {
   onInitialize(engine) {
     this.graphics.use(CarSprites[this.carType]); // Use the sprite based on the car type
 
+    const spriteWidth = CarSprites[this.carType].width;
+    const spriteHeight = CarSprites[this.carType].height;
+
+    this.collider.set(Shape.Box(spriteWidth, spriteHeight));
+
+    // Listen for collisionstart event
+    this.on("collisionstart", (event) => {
+      console.log("Collision detected with:", event.other);
+    });
+
+    this.body.bounciness = 1;
+    this.body.friction = 0;
+
+    this.body.limitDegreeOfFreedom.push(DegreeOfFreedom.Rotation);
+
   }
 
   steerLeft() {
-    this.vel.x = -200; // Move left
+    this.body.applyLinearImpulse(vec(-250, 0));
   }
 
   steerRight() {
-    this.vel.x = 200; // Move right
+    this.body.applyLinearImpulse(vec(250, 0));
   }
 
   useThrottle() {
@@ -36,8 +51,13 @@ export class Car extends Actor {
     // add drag
     this.vel.y += 5;
     // clamp speed (reverse order because negative y direction)
-    console.log(this.vel.y, -this.maxSpeed, -this.minSpeed)
     this.vel.y = clamp(this.vel.y, -this.maxSpeed, -this.minSpeed);
-  }
 
+    // reduce x movement
+    if (Math.abs(this.vel.x) < 10) {
+      this.vel.x = 0;
+    } else {
+      this.vel.x = this.vel.x - Math.sign(this.vel.x) * 10;
+    }
+  }
 }

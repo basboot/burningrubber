@@ -8,12 +8,9 @@ export class Player extends Car {
   }
 
   onInitialize(engine) {
-    this.graphics.use(CarSprites[this.carType]); // Use the sprite based on the car type
+    super.onInitialize(engine);
 
-    // Listen for key press and release events
-    engine.input.keyboard.on("press", (evt) => this.handleKeyPress(evt));
-    engine.input.keyboard.on("release", (evt) => this.handleKeyRelease(evt));
-  }
+   }
 
   update(engine, delta) {
     if (engine.input.keyboard.isHeld(Keys.ArrowUp)) {
@@ -22,19 +19,13 @@ export class Player extends Car {
     if (engine.input.keyboard.isHeld(Keys.ArrowDown)) {
       this.useBreak();
     }
-
-    super.update(engine, delta);
-  }
-
-  handleKeyPress(evt) {
-    if (evt.key === "ArrowLeft") {
+    if (engine.input.keyboard.isHeld(Keys.ArrowLeft)) {
       this.steerLeft();
-    } else if (evt.key === "ArrowRight") {
+    }
+    if (engine.input.keyboard.isHeld(Keys.ArrowRight)) {
       this.steerRight();
     }
-  }
 
-  handleKeyRelease(evt) {
-      this.vel.x = 0;
+    super.update(engine, delta);
   }
 }

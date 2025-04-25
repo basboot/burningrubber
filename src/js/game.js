@@ -1,5 +1,5 @@
 import "../css/style.css";
-import { Engine, DisplayMode } from "excalibur";
+import {Engine, DisplayMode, SolverStrategy} from "excalibur";
 import { Resources, ResourceLoader } from "./resources.js";
 import { Level } from "./level.js";
 
@@ -10,6 +10,9 @@ export class Game extends Engine {
       height: 450,
       maxFps: 60,
       displayMode: DisplayMode.FitScreen,
+      physics: {
+        solver: SolverStrategy.Realistic // Use the Arcade solver (default)
+      }
     });
     this.start(ResourceLoader).then(() => this.startGame());
   }

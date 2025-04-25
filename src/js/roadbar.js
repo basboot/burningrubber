@@ -1,4 +1,4 @@
-import { Actor, Vector, Color } from "excalibur";
+import {Actor, Vector, Color, CollisionType} from "excalibur";
 
 export class RoadBar extends Actor {
   constructor(position) {
@@ -7,6 +7,7 @@ export class RoadBar extends Actor {
       width: 10, // Width of the bar
       height: 50, // Height of the bar
       color: Color.White, // White color for the bar
+      collisionType: CollisionType.PreventCollision
     });
     this.z = -1; // Set a lower z-index so the car is drawn over the bar
   }
