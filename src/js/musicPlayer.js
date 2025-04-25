@@ -4,17 +4,17 @@ export class MusicPlayer {
   constructor(midiData) {
     this.midiData = midiData;
 
-    // Create synths and samplers for the instruments
+    // Create 8-bit style instruments
     this.instruments = [
-      new Tone.Synth({ oscillator: { type: "sawtooth" } }).toDestination(), // Bass Synth 1
-      new Tone.Synth({ oscillator: { type: "sawtooth" } }).toDestination(), // Bass Synth 2
-      new Tone.Synth({ oscillator: { type: "sine" } }).toDestination(), // Atmosphere Synth
+      new Tone.Synth({ oscillator: { type: "square" } }).toDestination(), // Bass Synth 1
+      new Tone.Synth({ oscillator: { type: "square" } }).toDestination(), // Bass Synth 2
+      new Tone.Synth({ oscillator: { type: "triangle" } }).toDestination(), // Atmosphere Synth
       new Tone.Synth({ oscillator: { type: "square" } }).toDestination(), // Brass Synth
       new Tone.Synth({ oscillator: { type: "triangle" } }).toDestination(), // Contrabass
       new Tone.Noise({ type: "white" }).toDestination(), // Effect Synth 1
-      new Tone.Synth({ oscillator: { type: "sine" } }).toDestination(), // Pad Synth 1
-      new Tone.Synth({ oscillator: { type: "sawtooth" } }).toDestination(), // Brightness Synth
-      new Tone.Synth({ oscillator: { type: "sine" } }).toDestination(), // Pad Synth 2
+      new Tone.Synth({ oscillator: { type: "square" } }).toDestination(), // Pad Synth 1
+      new Tone.Synth({ oscillator: { type: "square" } }).toDestination(), // Brightness Synth
+      new Tone.Synth({ oscillator: { type: "square" } }).toDestination(), // Pad Synth 2
       new Tone.Sampler({
         C1: "https://tonejs.github.io/audio/drum-samples/CR78/kick.mp3",
         D1: "https://tonejs.github.io/audio/drum-samples/CR78/snare.mp3",
@@ -32,6 +32,14 @@ export class MusicPlayer {
         D1: "https://tonejs.github.io/audio/drum-samples/CR78/snare.mp3",
       }).toDestination(), // Snare 3
     ];
+
+    // Add a bitcrusher effect for 8-bit sound
+    this.bitCrusher = new Tone.BitCrusher(4).toDestination(); // 4-bit resolution
+    this.instruments.forEach((instrument) => {
+      if (instrument instanceof Tone.Synth || instrument instanceof Tone.Noise) {
+        instrument.connect(this.bitCrusher);
+      }
+    });
   }
 
   play() {
