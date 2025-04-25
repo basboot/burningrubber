@@ -29,5 +29,7 @@ export class Grass extends Actor {
                 this.pos.y -= engine.drawHeight + this.height * 2; // Reset position when leaving the viewport
             }
         });
+
+        this.body.friction = 0;
     }
 }
