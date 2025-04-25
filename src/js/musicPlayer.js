@@ -4,42 +4,83 @@ export class MusicPlayer {
   constructor(midiData) {
     this.midiData = midiData;
 
-    // Create 8-bit style instruments
+    // Create 8-bit style instruments with dramatic effects
     this.instruments = [
-      new Tone.Synth({ oscillator: { type: "square" } }).toDestination(), // Bass Synth 1
-      new Tone.Synth({ oscillator: { type: "square" } }).toDestination(), // Bass Synth 2
-      new Tone.Synth({ oscillator: { type: "triangle" } }).toDestination(), // Atmosphere Synth
-      new Tone.Synth({ oscillator: { type: "square" } }).toDestination(), // Brass Synth
-      new Tone.Synth({ oscillator: { type: "triangle" } }).toDestination(), // Contrabass
-      new Tone.Noise({ type: "white" }).toDestination(), // Effect Synth 1
-      new Tone.Synth({ oscillator: { type: "square" } }).toDestination(), // Pad Synth 1
-      new Tone.Synth({ oscillator: { type: "square" } }).toDestination(), // Brightness Synth
-      new Tone.Synth({ oscillator: { type: "square" } }).toDestination(), // Pad Synth 2
-      new Tone.Sampler({
-        C1: "https://tonejs.github.io/audio/drum-samples/CR78/kick.mp3",
-        D1: "https://tonejs.github.io/audio/drum-samples/CR78/snare.mp3",
-        E1: "https://tonejs.github.io/audio/drum-samples/CR78/hihat.mp3",
-      }).toDestination(), // Percussion
-      new Tone.Noise({ type: "white" }).toDestination(), // Effect Synth 2
-      new Tone.Noise({ type: "white" }).toDestination(), // Effect Synth 3
-      new Tone.Sampler({
-        D1: "https://tonejs.github.io/audio/drum-samples/CR78/snare.mp3",
-      }).toDestination(), // Snare 1
-      new Tone.Sampler({
-        D1: "https://tonejs.github.io/audio/drum-samples/CR78/snare.mp3",
-      }).toDestination(), // Snare 2
-      new Tone.Sampler({
-        D1: "https://tonejs.github.io/audio/drum-samples/CR78/snare.mp3",
-      }).toDestination(), // Snare 3
+      this.createRetroSynth(), // Bass Synth 1
+      this.createRetroSynth(), // Bass Synth 2
+      this.createRetroSynth("triangle"), // Atmosphere Synth
+      this.createRetroSynth(), // Brass Synth
+      this.createRetroSynth("triangle"), // Contrabass
+      this.createNoiseSynth(), // Effect Synth 1
+      this.createRetroSynth(), // Pad Synth 1
+      this.createRetroSynth(), // Brightness Synth
+      this.createRetroSynth(), // Pad Synth 2
+      this.createDrumSampler(), // Percussion
+      this.createNoiseSynth(), // Effect Synth 2
+      this.createNoiseSynth(), // Effect Synth 3
+      this.createDrumSampler(), // Snare 1
+      this.createDrumSampler(), // Snare 2
+      this.createDrumSampler(), // Snare 3
     ];
+  }
 
-    // Add a bitcrusher effect for 8-bit sound
-    this.bitCrusher = new Tone.BitCrusher(4).toDestination(); // 4-bit resolution
-    this.instruments.forEach((instrument) => {
-      if (instrument instanceof Tone.Synth || instrument instanceof Tone.Noise) {
-        instrument.connect(this.bitCrusher);
-      }
+  // Create a retro synth with dramatic effects
+  createRetroSynth(type = "square") {
+    const synth = new Tone.Synth({
+      oscillator: { type },
+      envelope: {
+        attack: 0.01,
+        decay: 0.2,
+        sustain: 0.3,
+        release: 0.5,
+      },
     });
+
+    // Add effects
+    const delay = new Tone.FeedbackDelay(0.25, 0.5); // Echo effect
+    const reverb = new Tone.Reverb({ decay: 2, wet: 0.5 }); // Spacious reverb
+    const vibrato = new Tone.Vibrato(5, 0.1); // Subtle pitch modulation
+
+    // Chain effects
+    synth.chain(delay, reverb, vibrato, Tone.Destination);
+    return synth;
+  }
+
+  // Create a noise synth with subtle effects
+  createNoiseSynth() {
+    const noise = new Tone.Noise({ type: "white" });
+    const noiseEnvelope = new Tone.AmplitudeEnvelope({
+      attack: 0.01,
+      decay: 0.2,
+      sustain: 0.1,
+      release: 0.3,
+    });
+
+    // Add effects
+    const reverb = new Tone.Reverb({ decay: 1.5, wet: 0.4 }); // Add depth
+    const delay = new Tone.FeedbackDelay(0.2, 0.3); // Add echo
+
+    // Chain effects
+    noise.chain(noiseEnvelope, delay, reverb, Tone.Destination);
+    return {
+      start: (time) => noise.start(time),
+      stop: (time) => noise.stop(time),
+    };
+  }
+
+  // Create a drum sampler with reverb for dramatic percussion
+  createDrumSampler() {
+    const sampler = new Tone.Sampler({
+      C1: "https://tonejs.github.io/audio/drum-samples/CR78/kick.mp3",
+      D1: "https://tonejs.github.io/audio/drum-samples/CR78/snare.mp3",
+      E1: "https://tonejs.github.io/audio/drum-samples/CR78/hihat.mp3",
+    });
+
+    // Add effects
+    const reverb = new Tone.Reverb({ decay: 1.2, wet: 0.5 }); // Add depth
+    sampler.chain(reverb, Tone.Destination);
+
+    return sampler;
   }
 
   play() {
@@ -62,7 +103,7 @@ export class MusicPlayer {
             if (drumNote) {
               instrument.triggerAttack(drumNote, time, note.velocity);
             }
-          } else if (instrument instanceof Tone.Noise) {
+          } else if (instrument.start && instrument.stop) {
             // For noise instruments
             instrument.start(time);
             instrument.stop(time + note.duration);
