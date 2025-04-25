@@ -2,7 +2,7 @@ import "../css/style.css";
 import { Engine, DisplayMode, SolverStrategy } from "excalibur";
 import { Resources, ResourceLoader } from "./resources.js";
 import { Level } from "./level.js";
-import {MusicPlayer} from "./musicPlayer.js";
+import { MusicPlayer } from "./musicPlayer.js";
 
 export class Game extends Engine {
   constructor() {
@@ -15,6 +15,8 @@ export class Game extends Engine {
         solver: SolverStrategy.Realistic, // Use the Arcade solver (default)
       },
     });
+
+    this.soundLevel = 0.5; // Default sound level (50%)
     this.start(ResourceLoader).then(() => this.startGame());
   }
 
@@ -25,12 +27,15 @@ export class Game extends Engine {
 
     // Initialize and play the music
     const musicPlayer = new MusicPlayer(midiData);
-    musicPlayer.play();
+    musicPlayer.setVolume(this.soundLevel); // Set the initial sound level
+    if (false) {
+      // TODO: create better sounds
+      musicPlayer.play();
+    }
 
     const level = new Level(); // Create the Level scene
     this.add("level", level); // Add the scene to the game
     this.goToScene("level"); // Switch to the Level scene
-
   }
 }
 

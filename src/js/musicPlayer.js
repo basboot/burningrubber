@@ -4,7 +4,10 @@ export class MusicPlayer {
   constructor(midiData) {
     this.midiData = midiData;
 
-    // Create 8-bit style instruments with dramatic effects
+    // Create a master volume control
+    this.volume = new Tone.Volume(-12).toDestination();
+
+    // Connect instruments to the master volume
     this.instruments = [
       this.createRetroSynth(), // Bass Synth 1
       this.createRetroSynth(), // Bass Synth 2
@@ -22,6 +25,13 @@ export class MusicPlayer {
       this.createDrumSampler(), // Snare 2
       this.createDrumSampler(), // Snare 3
     ];
+
+    // Connect only valid Tone nodes to the volume
+    this.instruments.forEach((instrument) => {
+      if (instrument instanceof Tone.Synth || instrument instanceof Tone.Sampler) {
+        instrument.connect(this.volume);
+      }
+    });
   }
 
   // Create a retro synth with dramatic effects
@@ -81,6 +91,10 @@ export class MusicPlayer {
     sampler.chain(reverb, Tone.Destination);
 
     return sampler;
+  }
+
+  setVolume(level) {
+    this.volume.volume.value = Tone.gainToDb(level); // Convert linear gain to decibels
   }
 
   play() {
