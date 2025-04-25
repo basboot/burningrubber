@@ -3,7 +3,7 @@ import { Car } from "./car.js";
 import { RoadBar } from "./roadbar.js";
 import { Player } from "./player.js";
 import { EnemyCar } from "./enemycar.js";
-import { Grass } from "./grass.js";
+import { Obstacle } from "./obstacle.js";
 
 export class Level extends Scene {
   onInitialize(engine) {
@@ -38,8 +38,8 @@ export class Level extends Scene {
     for (let i = -2; i < grassCount; i++) {
       const grassY = i * grassSpacing; // Calculate y position for each grass tile
 
-      const leftGrass = new Grass(200, grassY, 400, true);
-      const rightGrass = new Grass(600, grassY, 400, false);
+      const leftGrass = new Obstacle(200, grassY, 400, true);
+      const rightGrass = new Obstacle(600, grassY, 400, false);
 
       this.add(leftGrass);
       this.add(rightGrass);

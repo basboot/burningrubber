@@ -1,5 +1,6 @@
 import {Actor, clamp, CollisionType, DegreeOfFreedom, Shape, vec} from "excalibur";
 import { CarSprites } from "./resources";
+import { Obstacle } from "./obstacle"; // Import the Obstacle class
 
 export class Car extends Actor {
   constructor(carType, initialPosition, initialVelocity, minSpeed, maxSpeed) {
@@ -8,7 +9,9 @@ export class Car extends Actor {
     this.pos = initialPosition; // Set initial position
     this.vel = initialVelocity; // Set initial velocity
     this.minSpeed = minSpeed; // Minimum speed
-    this.maxSpeed = maxSpeed; // Minimum speed
+    this.maxSpeed = maxSpeed; // Maximum speed
+
+    this.gameOver = false;
   }
 
   onInitialize(engine) {
@@ -21,14 +24,16 @@ export class Car extends Actor {
 
     // Listen for collisionstart event
     this.on("collisionstart", (event) => {
-      console.log("Collision detected with:", event.other);
+      console.log('Actor1 collided with:', event.other.owner instanceof Obstacle);
+      if (event.other.owner instanceof Obstacle) {
+        this.gameOver = true;
+      }
     });
 
     this.body.bounciness = 1;
     this.body.friction = 0;
 
     this.body.limitDegreeOfFreedom.push(DegreeOfFreedom.Rotation);
-
   }
 
   steerLeft() {
@@ -48,16 +53,30 @@ export class Car extends Actor {
   }
 
   update(engine, delta) {
-    // add drag
+
+    // Add drag
     this.vel.y += 5;
-    // clamp speed (reverse order because negative y direction)
+    // Clamp speed (reverse order because negative y direction)
     this.vel.y = clamp(this.vel.y, -this.maxSpeed, -this.minSpeed);
 
-    // reduce x movement
+    // Reduce x movement
     if (Math.abs(this.vel.x) < 10) {
       this.vel.x = 0;
     } else {
       this.vel.x = this.vel.x - Math.sign(this.vel.x) * 10;
     }
+
+    if (this.gameOver) {
+      // TODO: explode?
+      this.vel.x = 0;
+      this.vel.y = 0;
+    }
+  }
+
+  handleObstacleCollision(obstacle) {
+    // Handle what happens when the car collides with an obstacle
+    console.log("Handling collision with obstacle:", obstacle);
+    // Example: Stop the car
+    this.vel = vec(0, 0);
   }
 }

@@ -1,6 +1,6 @@
 import {Actor, CollisionType, Color, Shape, Vector} from "excalibur";
 
-export class Grass extends Actor {
+export class Obstacle extends Actor {
     constructor(x, y, width, isLeft) {
         const height = 10; // Fixed height for grass
         const position = isLeft
