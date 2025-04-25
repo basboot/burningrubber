@@ -1,6 +1,7 @@
 import {Scene, Vector, Color, Axis} from "excalibur";
 import { Car } from "./car.js";
 import { RoadBar } from "./roadbar.js";
+import {Player} from "./player.js";
 
 export class Level extends Scene {
   onInitialize(engine) {
@@ -8,7 +9,7 @@ export class Level extends Scene {
     this.backgroundColor = Color.Gray;
 
     // Create a car in the middle of the screen, moving upward
-    const car = new Car("camaro", new Vector(400, 225), new Vector(0, -200));
+    const car = new Player("camaro", new Vector(400, 225), new Vector(0, -200), 200, 700);
     this.add(car);
 
     // Add road bars to the middle of the screen
