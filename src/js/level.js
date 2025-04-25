@@ -30,4 +30,8 @@ export class Level extends Scene {
     // Lock the camera to follow the car in the y-direction only
     this.camera.strategy.lockToActorAxis(car, Axis.Y);
   }
+
+  getLanes() {
+    return [300, 400, 500];
+  }
 }
