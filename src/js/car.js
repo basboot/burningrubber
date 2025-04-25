@@ -72,7 +72,7 @@ export class Car extends Actor {
       this.vel.y = 0;
     }
 
-    this.rotation = this.vel.x / 1000;
+    this.rotation = this.vel.x / 2000;
   }
 
   handleObstacleCollision(obstacle) {
