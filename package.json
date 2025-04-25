@@ -10,6 +10,7 @@
     "vite": "^6.2.1"
   },
   "dependencies": {
-    "excalibur": "^0.30.3"
+    "excalibur": "^0.30.3",
+    "tone": "^15.0.4"
   }
 }
