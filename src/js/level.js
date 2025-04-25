@@ -1,8 +1,9 @@
-import {Scene, Vector, Color, Axis} from "excalibur";
+import { Scene, Vector, Color, Axis } from "excalibur";
 import { Car } from "./car.js";
 import { RoadBar } from "./roadbar.js";
-import {Player} from "./player.js";
-import {EnemyCar} from "./enemycar.js";
+import { Player } from "./player.js";
+import { EnemyCar } from "./enemycar.js";
+import { Grass } from "./grass.js";
 
 export class Level extends Scene {
   onInitialize(engine) {
@@ -13,7 +14,7 @@ export class Level extends Scene {
     const car = new Player("camaro", new Vector(400, 225), new Vector(0, -200), 200, 700);
     this.add(car);
 
-    this.add(new EnemyCar(new Vector(300, -500), new Vector(0, -200), 200, 700))
+    this.add(new EnemyCar(new Vector(300, -500), new Vector(0, -200), 200, 700));
 
     // Add road bars to the middle of the screen
     const barSpacing = 100; // Space between bars
@@ -29,6 +30,20 @@ export class Level extends Scene {
 
     // Lock the camera to follow the car in the y-direction only
     this.camera.strategy.lockToActorAxis(car, Axis.Y);
+
+    // Add grass to the left and right of the track
+    const grassSpacing = 10; // Space between grass tiles
+    const grassCount = Math.ceil(engine.drawHeight / grassSpacing) + 2; // Number of grass tiles to fill the screen
+
+    for (let i = -2; i < grassCount; i++) {
+      const grassY = i * grassSpacing; // Calculate y position for each grass tile
+
+      const leftGrass = new Grass(200, grassY, 400, true);
+      const rightGrass = new Grass(600, grassY, 400, false);
+
+      this.add(leftGrass);
+      this.add(rightGrass);
+    }
   }
 
   getLanes() {

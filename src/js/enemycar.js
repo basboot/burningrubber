@@ -21,7 +21,7 @@ export class EnemyCar extends Car {
       }
     });
   }
-  
+
   update(engine, delta) {
     const lanes = this.scene.getLanes(); // Get all lanes
 
