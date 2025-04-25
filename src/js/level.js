@@ -1,4 +1,4 @@
-import { Scene, Vector, Color } from "excalibur";
+import {Scene, Vector, Color, Axis} from "excalibur";
 import { Car } from "./car.js";
 import { RoadBar } from "./roadbar.js";
 
@@ -8,7 +8,7 @@ export class Level extends Scene {
     this.backgroundColor = Color.Gray;
 
     // Create a car in the middle of the screen, moving upward
-    const car = new Car("camaro", new Vector(400, 225), new Vector(0, -100));
+    const car = new Car("camaro", new Vector(400, 225), new Vector(0, -200));
     this.add(car);
 
     // Add road bars to the middle of the screen
@@ -24,6 +24,6 @@ export class Level extends Scene {
     }
 
     // Lock the camera to follow the car in the y-direction only
-    this.camera.strategy.lockToActorAxis(car, "y");
+    this.camera.strategy.lockToActorAxis(car, Axis.Y);
   }
 }

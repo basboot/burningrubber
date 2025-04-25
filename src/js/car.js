@@ -1,4 +1,4 @@
-import { Actor, Vector } from "excalibur";
+import {Actor, Keys, Vector} from "excalibur";
 import { CarSprites } from "./resources";
 
 export class Car extends Actor {
@@ -8,6 +8,7 @@ export class Car extends Actor {
     this.pos = initialPosition; // Set initial position
     this.vel = initialVelocity; // Set initial velocity
     this.minSpeed = 200; // Minimum speed
+    this.maxSpeed = 500; // Minimum speed
   }
 
   onInitialize(engine) {
@@ -18,21 +19,28 @@ export class Car extends Actor {
     engine.input.keyboard.on("release", (evt) => this.handleKeyRelease(evt));
   }
 
+  update(engine, delta) {
+    if (engine.input.keyboard.isHeld(Keys.ArrowUp)) {
+      console.log(this.vel.y);
+      this.vel.y = Math.max(this.vel.y - 10, -this.maxSpeed); // Increase speed (move faster upward)
+    } else {
+      this.vel.y += 5;
+    }
+    if (engine.input.keyboard.isHeld(Keys.ArrowDown)) {
+      this.vel.y += 50; // Decrease speed (move slower upward)
+    }
+    this.vel.y = Math.min(this.vel.y, -this.minSpeed);
+  }
+
   handleKeyPress(evt) {
     if (evt.key === "ArrowLeft") {
       this.vel.x = -200; // Move left
     } else if (evt.key === "ArrowRight") {
       this.vel.x = 200; // Move right
-    } else if (evt.key === "ArrowUp") {
-      this.vel.y = this.vel.y - 50; // Increase speed (move faster upward)
-    } else if (evt.key === "ArrowDown") {
-      this.vel.y = this.vel.y + 50; // Decrease speed (move slower upward)
     }
   }
 
   handleKeyRelease(evt) {
-    if (evt.key === "ArrowLeft" || evt.key === "ArrowRight") {
-      this.vel.x = 0; // Stop horizontal movement
-    }
+      this.vel.x = 0;
   }
 }
