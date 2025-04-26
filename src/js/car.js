@@ -34,14 +34,16 @@ export class Car extends Actor {
     this.body.friction = 0;
 
     this.body.limitDegreeOfFreedom.push(DegreeOfFreedom.Rotation);
+
+    super.onInitialize(engine);
   }
 
   steerLeft() {
-    this.body.applyLinearImpulse(vec(-250, 0));
+    this.body.applyLinearImpulse(vec(-25 * this.body.mass, 0));
   }
 
   steerRight() {
-    this.body.applyLinearImpulse(vec(250, 0));
+    this.body.applyLinearImpulse(vec(25 * this.body.mass, 0));
   }
 
   useThrottle() {

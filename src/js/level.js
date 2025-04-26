@@ -4,6 +4,7 @@ import { RoadBar } from "./roadbar.js";
 import { Player } from "./player.js";
 import { EnemyCar } from "./enemycar.js";
 import { Obstacle } from "./obstacle.js";
+import {EnemyCreator} from "./enemycreator.js";
 
 export class Level extends Scene {
   onInitialize(engine) {
@@ -11,10 +12,9 @@ export class Level extends Scene {
     this.backgroundColor = Color.Gray;
 
     // Create a car in the middle of the screen, moving upward
-    const car = new Player("camaro", new Vector(400, 225), new Vector(0, -200), 200, 700);
+    const car = new Player("camaro", new Vector(400, 225), new Vector(0, -200), 200, 500);
     this.add(car);
 
-    this.add(new EnemyCar(new Vector(300, -500), new Vector(0, -200), 200, 700));
 
     // Add road bars to the middle of the screen
     const barSpacing = 100; // Space between bars
@@ -44,6 +44,10 @@ export class Level extends Scene {
       this.add(leftGrass);
       this.add(rightGrass);
     }
+
+    this.add(new EnemyCreator());
+
+    console.log("init finished of Level");
   }
 
   getLanes() {

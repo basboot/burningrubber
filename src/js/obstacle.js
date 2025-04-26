@@ -1,7 +1,7 @@
 import {Actor, CollisionType, Color, Shape, Vector} from "excalibur";
 
 export class Obstacle extends Actor {
-    constructor(x, y, width, isLeft) {
+    constructor(x, y, width, isLeft, level) {
         const height = 10; // Fixed height for grass
         const position = isLeft
             ? new Vector(x - width / 2, y + height / 2) // Adjust for left side
@@ -31,5 +31,9 @@ export class Obstacle extends Actor {
         });
 
         this.body.friction = 0;
+    }
+
+    update(engine, elapsed) {
+        super.update(engine, elapsed);
     }
 }

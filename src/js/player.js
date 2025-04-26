@@ -8,11 +8,13 @@ export class Player extends Car {
   }
 
   onInitialize(engine) {
+    this.body.mass = 1000;
     super.onInitialize(engine);
 
    }
 
   update(engine, delta) {
+    // console.log(this.pos);
     if (engine.input.keyboard.isHeld(Keys.ArrowUp)) {
       this.useThrottle();
     }
