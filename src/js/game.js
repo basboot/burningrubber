@@ -22,7 +22,7 @@ export class Game extends Engine {
 
   async startGame() {
     // Load the MIDI data
-    const response = await fetch("/public/music/autobahn.json");
+    const response = await fetch("/public/music/autobahn2.json");
     const midiData = await response.json();
 
     // Initialize and play the music

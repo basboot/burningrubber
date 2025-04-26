@@ -8,6 +8,8 @@ export class MusicPlayer {
     this.volume = new Tone.Volume(-12).toDestination();
 
     // Connect instruments to the master volume
+
+    // TODO: map and tune instruments
     this.instruments = [
       this.createRetroSynth(), // Bass Synth 1
       this.createRetroSynth(), // Bass Synth 2
@@ -47,12 +49,11 @@ export class MusicPlayer {
     });
 
     // Add effects
-    const delay = new Tone.FeedbackDelay(0.25, 0.5); // Echo effect
     const reverb = new Tone.Reverb({ decay: 2, wet: 0.5 }); // Spacious reverb
     const vibrato = new Tone.Vibrato(5, 0.1); // Subtle pitch modulation
 
     // Chain effects
-    synth.chain(delay, reverb, vibrato, Tone.Destination);
+    synth.chain(reverb, vibrato, Tone.Destination);
     return synth;
   }
 
