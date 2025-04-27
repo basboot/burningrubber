@@ -14,6 +14,7 @@ export class EnemyCreator extends Actor {
 
         // Create a timer that fires every 1 second (1000 ms) and repeats 5 times
         const timer = new Timer({
+            randomRange: [0, 2000],
             interval: 1000,
             repeats: true,
             action: () => { this.spawnEnemy(engine); }
@@ -22,7 +23,6 @@ export class EnemyCreator extends Actor {
         this.scene.add(timer);
 
         timer.start();
-
 
 
         super.onInitialize(engine);

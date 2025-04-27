@@ -23,12 +23,34 @@ export class EnemyCar extends Car {
     });
 
     this.canSteer = true;
+
+
+
+
+  }
+
+  selectRandomLane(engine) {
+    this.selectedLane = Math.floor(Math.random() * engine.currentScene.getLanes().length);
   }
 
   onInitialize(engine) {
     console.log("EnemyCar initialized at:", this.pos);
 
     super.onInitialize(engine);
+
+    this.selectRandomLane(engine);
+
+    // Switch lanes every 2-4 secs
+    const timer = new Timer({
+      randomRange: [0, 2000],
+      interval: 2000,
+      repeats: true,
+      action: () => { this.selectRandomLane(engine); }
+    });
+
+    // TODO: shouldnt the timer be a child of the actor?
+    engine.currentScene.add(timer);
+    timer.start();
 
 
     this.on("exitviewport", () => {
@@ -65,19 +87,24 @@ export class EnemyCar extends Car {
       }
     });
   }
+  
 
   update(engine, delta) {
 
     const lanes = this.scene.getLanes(); // Get all lanes
 
-    // Find the closest lane using reduce
-    const closestLane = lanes.reduce((closest, lane) => {
-      return Math.abs(lane - this.pos.x) < Math.abs(closest - this.pos.x) ? lane : closest;
-    }, lanes[0]);
+    if (this.selectedLane > lanes.length - 1) {
+      this.selectedLane = lanes.length - 1;
+    }
 
-    // console.log(`Closest lane to EnemyCar: ${closestLane}`, this.pos);
+    // // Find the closest lane using reduce
+    // const closestLane = lanes.reduce((closest, lane) => {
+    //   return Math.abs(lane - this.pos.x) < Math.abs(closest - this.pos.x) ? lane : closest;
+    // }, lanes[0]);
+    //
+    // const error = closestLane - this.pos.x;
 
-    const error = closestLane - this.pos.x;
+    const error = lanes[this.selectedLane] - this.pos.x;
 
     if (this.canSteer && Math.abs(error) > 10) {
         if (Math.sign(error) < 0) {
