@@ -1,15 +1,14 @@
 import * as Tone from "tone";
 
 export class MusicPlayer {
-  constructor(midiData, debugInstrument = null) {
+  constructor(midiData) {
     this.midiData = midiData;
-    this.debugInstrument = "synth"; // Debug option to enable a single instrument
 
     // Create a master volume control
     this.volume = new Tone.Volume(-12).toDestination();
 
     // Map instruments dynamically based on the MIDI JSON
-    this.instruments = this.midiData.tracks.map((track) => this.createInstrument(track.instrument.name));
+    this.instruments = this.midiData.tracks.map((track, index) => this.createInstrument(index));
 
     // Connect only valid Tone nodes to the volume
     this.instruments.forEach((instrument) => {
@@ -19,31 +18,60 @@ export class MusicPlayer {
     });
   }
 
-  // Create an instrument based on the instrument name
-  createInstrument(name) {
-    switch (name.toLowerCase()) {
-      case "bass synth":
-        return this.createRetroSynth("sawtooth");
-      case "atmosphere synth":
-        return this.createRetroSynth("triangle");
-      case "brass synth":
-        return this.createRetroSynth("square");
-      case "contrabass":
-        return this.createRetroSynth("triangle");
-      case "effect synth":
-        return this.createNoiseSynth();
-      case "pad synth":
-        return this.createRetroSynth("sine");
-      case "brightness synth":
-        return this.createRetroSynth("sawtooth");
-      case "percussion":
-        return this.createDrumSampler();
-      case "snare":
-        return this.createDrumSampler();
+  // Create an instrument based on the track index
+  createInstrument(index) {
+    switch (index) {
+      case 0:
+        return this.createTrumpet();
+      case 1:
+        return this.createContrabass();
+      case 2:
+        return this.createElectricPiano();
+      case 3:
+        return this.createViolinSection();
+      case 4:
+        return this.createXylophone();
+      case 5:
+        return this.createPolysynth();
+      case 6:
+        return this.createDrums();
       default:
-        console.warn(`Unknown instrument: ${name}, using default synth.`);
-        return this.createRetroSynth(); // Default to a basic synth
+        console.warn(`Unknown track index: ${index}, using default synth.`);
+        return this.createDefaultSynth();
     }
+  }
+
+  // Create specific instruments
+  createTrumpet() {
+    return this.createRetroSynth("square");
+  }
+
+  createContrabass() {
+    return this.createRetroSynth("triangle");
+  }
+
+  createElectricPiano() {
+    return this.createRetroSynth("sine");
+  }
+
+  createViolinSection() {
+    return this.createRetroSynth("sawtooth");
+  }
+
+  createXylophone() {
+    return this.createRetroSynth("triangle");
+  }
+
+  createPolysynth() {
+    return this.createRetroSynth("square");
+  }
+
+  createDrums() {
+    return this.createDrumSampler();
+  }
+
+  createDefaultSynth() {
+    return this.createRetroSynth();
   }
 
   // Create a retro synth with dramatic effects
@@ -65,28 +93,6 @@ export class MusicPlayer {
     // Chain effects
     synth.chain(reverb, vibrato, Tone.Destination);
     return synth;
-  }
-
-  // Create a noise synth with subtle effects
-  createNoiseSynth() {
-    const noise = new Tone.Noise({ type: "white" });
-    const noiseEnvelope = new Tone.AmplitudeEnvelope({
-      attack: 0.01,
-      decay: 0.2,
-      sustain: 0.1,
-      release: 0.3,
-    });
-
-    // Add effects
-    const reverb = new Tone.Reverb({ decay: 1.5, wet: 0.4 }); // Add depth
-    const delay = new Tone.FeedbackDelay(0.2, 0.3); // Add echo
-
-    // Chain effects
-    noise.chain(noiseEnvelope, delay, reverb, Tone.Destination);
-    return {
-      start: (time) => noise.start(time),
-      stop: (time) => noise.stop(time),
-    };
   }
 
   // Create a drum sampler with reverb for dramatic percussion
@@ -119,12 +125,6 @@ export class MusicPlayer {
     tracks.forEach((track, index) => {
       const instrument = this.instruments[index];
       if (!instrument) return; // Skip if no instrument for this track
-
-      // Skip scheduling if debugInstrument is set and doesn't match
-      console.log(track.instrument.name.toLowerCase());
-      if (this.debugInstrument && track.instrument.name.toLowerCase() !== this.debugInstrument.toLowerCase()) {
-        return;
-      }
 
       track.notes.forEach((note) => {
         Tone.Transport.schedule((time) => {
