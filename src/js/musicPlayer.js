@@ -1,32 +1,15 @@
 import * as Tone from "tone";
 
 export class MusicPlayer {
-  constructor(midiData) {
+  constructor(midiData, debugInstrument = null) {
     this.midiData = midiData;
+    this.debugInstrument = "synth"; // Debug option to enable a single instrument
 
     // Create a master volume control
     this.volume = new Tone.Volume(-12).toDestination();
 
-    // Connect instruments to the master volume
-
-    // TODO: map and tune instruments
-    this.instruments = [
-      this.createRetroSynth(), // Bass Synth 1
-      this.createRetroSynth(), // Bass Synth 2
-      this.createRetroSynth("triangle"), // Atmosphere Synth
-      this.createRetroSynth(), // Brass Synth
-      this.createRetroSynth("triangle"), // Contrabass
-      this.createNoiseSynth(), // Effect Synth 1
-      this.createRetroSynth(), // Pad Synth 1
-      this.createRetroSynth(), // Brightness Synth
-      this.createRetroSynth(), // Pad Synth 2
-      this.createDrumSampler(), // Percussion
-      this.createNoiseSynth(), // Effect Synth 2
-      this.createNoiseSynth(), // Effect Synth 3
-      this.createDrumSampler(), // Snare 1
-      this.createDrumSampler(), // Snare 2
-      this.createDrumSampler(), // Snare 3
-    ];
+    // Map instruments dynamically based on the MIDI JSON
+    this.instruments = this.midiData.tracks.map((track) => this.createInstrument(track.instrument.name));
 
     // Connect only valid Tone nodes to the volume
     this.instruments.forEach((instrument) => {
@@ -34,6 +17,33 @@ export class MusicPlayer {
         instrument.connect(this.volume);
       }
     });
+  }
+
+  // Create an instrument based on the instrument name
+  createInstrument(name) {
+    switch (name.toLowerCase()) {
+      case "bass synth":
+        return this.createRetroSynth("sawtooth");
+      case "atmosphere synth":
+        return this.createRetroSynth("triangle");
+      case "brass synth":
+        return this.createRetroSynth("square");
+      case "contrabass":
+        return this.createRetroSynth("triangle");
+      case "effect synth":
+        return this.createNoiseSynth();
+      case "pad synth":
+        return this.createRetroSynth("sine");
+      case "brightness synth":
+        return this.createRetroSynth("sawtooth");
+      case "percussion":
+        return this.createDrumSampler();
+      case "snare":
+        return this.createDrumSampler();
+      default:
+        console.warn(`Unknown instrument: ${name}, using default synth.`);
+        return this.createRetroSynth(); // Default to a basic synth
+    }
   }
 
   // Create a retro synth with dramatic effects
@@ -109,6 +119,12 @@ export class MusicPlayer {
     tracks.forEach((track, index) => {
       const instrument = this.instruments[index];
       if (!instrument) return; // Skip if no instrument for this track
+
+      // Skip scheduling if debugInstrument is set and doesn't match
+      console.log(track.instrument.name.toLowerCase());
+      if (this.debugInstrument && track.instrument.name.toLowerCase() !== this.debugInstrument.toLowerCase()) {
+        return;
+      }
 
       track.notes.forEach((note) => {
         Tone.Transport.schedule((time) => {
