@@ -22,8 +22,9 @@ export class Level extends Scene {
     for (let i = 0; i < barCount; i++) {
       const barY = i * barSpacing; // Calculate y position for each bar
 
-      for (let i = 0; i < 4; i++) {
-        const bar = new RoadBar(new Vector(250 + i * 100, barY)); // Place bar in the middle of the screen
+      // fill screen with bars
+      for (let i = 0; i < 9; i++) {
+        const bar = new RoadBar(new Vector(i * 100, barY));
         this.add(bar);
       }
     }
@@ -51,6 +52,6 @@ export class Level extends Scene {
   }
 
   getLanes() {
-    return [300, 400, 500];
+    return [350, 450, 550];
   }
 }
