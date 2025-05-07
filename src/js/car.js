@@ -1,4 +1,4 @@
-import {Actor, clamp, CollisionType, DegreeOfFreedom, RotationType, Shape, vec} from "excalibur";
+import { Actor, clamp, CollisionType, DegreeOfFreedom, RotationType, Shape, vec } from "excalibur";
 import { CarSprites } from "./resources";
 import { Obstacle } from "./obstacle"; // Import the Obstacle class
 
@@ -24,7 +24,7 @@ export class Car extends Actor {
 
     // Listen for collisionstart event
     this.on("collisionstart", (event) => {
-      console.log('Actor1 collided with:', event.other.owner instanceof Obstacle);
+      console.log("Actor1 collided with:", event.other.owner instanceof Obstacle);
       if (event.other.owner instanceof Obstacle) {
         this.gameOver = true;
       }
@@ -55,7 +55,6 @@ export class Car extends Actor {
   }
 
   update(engine, delta) {
-
     // Add drag
     this.vel.y += 5;
     // Clamp speed (reverse order because negative y direction)
@@ -75,6 +74,8 @@ export class Car extends Actor {
     }
 
     this.rotation = this.vel.x / 2000;
+
+    super.update(engine, delta);
   }
 
   handleObstacleCollision(obstacle) {
