@@ -22,6 +22,8 @@ export class Player extends Car {
       }
     });
 
+    this.z = 10;
+
     super.onInitialize(engine);
   }
 

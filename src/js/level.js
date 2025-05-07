@@ -38,8 +38,12 @@ export class Level extends Scene {
       }
     }
 
-    // Lock the camera to follow the car in the y-direction only
-    this.camera.strategy.lockToActorAxis(car, Axis.Y);
+    // Lock the camera to follow the car in the y-direction only, bit behind
+    this.camera.update = (engine, elapsed) => {
+      // Add the offset to the normal camera position
+      const actorPosition = new Vector(400, this.player.pos.y - 125);
+      this.camera.pos = actorPosition;
+    };
 
     // Load the level configuration from a text file
     const layout = await this.loadLevelLayout("config/level1.txt");
