@@ -4,17 +4,26 @@ import { RoadBar } from "./roadbar.js";
 import { Player } from "./player.js";
 import { EnemyCar } from "./enemycar.js";
 import { Obstacle } from "./obstacle.js";
-import {EnemyCreator} from "./enemycreator.js";
+import { EnemyCreator } from "./enemycreator.js";
 
 export class Level extends Scene {
-  onInitialize(engine) {
+  constructor() {
+    super(); // Call the superclass constructor
+    this.lanes = []; // Initialize lanes as an empty array
+  }
+
+  async onInitialize(engine) {
     // Set the background color to grey
     this.backgroundColor = Color.Gray;
 
+    this.tileWidth = 100; // Width of each tile
+    this.tileHeight = 100; // Height of each tile
+
     // Create a car in the middle of the screen, moving upward
     const car = new Player("camaro", new Vector(400, 225), new Vector(0, -200), 200, 500);
-    this.add(car);
+    this.player = car;
 
+    this.add(car);
 
     // Add road bars to the middle of the screen
     const barSpacing = 100; // Space between bars
@@ -32,26 +41,52 @@ export class Level extends Scene {
     // Lock the camera to follow the car in the y-direction only
     this.camera.strategy.lockToActorAxis(car, Axis.Y);
 
-    // Add grass to the left and right of the track
-    const grassSpacing = 10; // Space between grass tiles
-    const grassCount = Math.ceil(engine.drawHeight / grassSpacing) + 2; // Number of grass tiles to fill the screen
-
-    for (let i = -2; i < grassCount; i++) {
-      const grassY = i * grassSpacing; // Calculate y position for each grass tile
-
-      const leftGrass = new Obstacle(200, grassY, 400, true);
-      const rightGrass = new Obstacle(600, grassY, 400, false);
-
-      this.add(leftGrass);
-      this.add(rightGrass);
-    }
+    // Load the level configuration from a text file
+    const layout = await this.loadLevelLayout("config/level1.txt");
+    this.generateLevel(layout);
 
     this.add(new EnemyCreator());
 
     console.log("init finished of Level");
+    console.log(this.lanes);
   }
 
-  getLanes() {
-    return [350, 450, 550];
+  async loadLevelLayout(filePath) {
+    // Fetch the level configuration from the text file
+    const response = await fetch(filePath);
+    const text = await response.text();
+    return text.trim().split("\n"); // Split the layout into lines
+  }
+
+  generateLevel(layout) {
+    layout.forEach((line, rowIndex) => {
+      const lanes = [];
+      const tiles = line.split(""); // Split the line into individual characters
+
+      tiles.forEach((tile, colIndex) => {
+        const x = colIndex * this.tileWidth; // Calculate the x position of the tile
+        const y = -rowIndex * this.tileHeight; // Calculate the y position of the tile
+
+        if (tile === "G") {
+          // Add grass
+          const grass = new Obstacle(x, y, this.tileWidth, this.tileHeight);
+          this.add(grass);
+        } else if (tile === "R") {
+          lanes.push(x + this.tileWidth / 2);
+        }
+      });
+      this.lanes.push(lanes);
+    });
+  }
+
+  getLanes(offset = 0) {
+    console.log(this.player.pos.y);
+    console.log(this.tileHeight);
+    const tileIndex = Math.floor(-this.player.pos.y / this.tileHeight);
+
+    console.log(this.tileIndex);
+    console.log(this.lanes);
+
+    return this.lanes[tileIndex];
   }
 }
