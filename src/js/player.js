@@ -36,14 +36,22 @@ export class Player extends Car {
       this.useBreak();
     }
     if (engine.input.keyboard.isHeld(Keys.ArrowLeft)) {
-      this.steerLeft();
+      if (!this.jumping) {
+        this.steerLeft();
+      } else {
+        this.vel.x = -150;
+      }
     }
     if (engine.input.keyboard.isHeld(Keys.ArrowRight)) {
-      this.steerRight();
+      if (!this.jumping) {
+        this.steerRight();
+      } else {
+        this.vel.x = 150;
+      }
     }
 
     if (this.jumping) {
-      const t = (engine.clock.now() - this.jumpTime) * 0.0005 * Math.PI;
+      const t = (engine.clock.now() - this.jumpTime) * 0.0004 * Math.PI;
       if (t >= Math.PI) {
         this.body.collisionType = CollisionType.Active;
         this.jumping = false;
