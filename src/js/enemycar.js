@@ -1,14 +1,14 @@
-import {Actor, Keys, Timer, Vector} from "excalibur";
+import { Actor, Keys, Timer, Vector } from "excalibur";
 import { CarSprites } from "./resources";
 import { Car } from "./car.js";
-import {Obstacle} from "./obstacle.js";
-import {Player} from "tone";
+import { Obstacle } from "./obstacle.js";
+import { Player } from "tone";
 
 export class EnemyCar extends Car {
   constructor(initialPosition, initialVelocity, minSpeed, maxSpeed) {
     console.log("EnemyCar constructed");
 
-    // TODO: add full list to resources
+    // TODO: add information to list to resources
     const carTypes = ["bmw", "lexus", "bike"];
     const masses = [1500, 500, 5];
     const selected = Math.floor(Math.random() * carTypes.length);
@@ -19,14 +19,12 @@ export class EnemyCar extends Car {
     this.body.mass = masses[selected];
 
     this.on("initialize", (event) => {
-      console.log('Init of enemy');
+      console.log("Init of enemy");
     });
 
     this.canSteer = true;
 
-
-
-
+    this.lastError = 0;
   }
 
   selectRandomLane(engine) {
@@ -45,13 +43,14 @@ export class EnemyCar extends Car {
       randomRange: [0, 2000],
       interval: 2000,
       repeats: true,
-      action: () => { this.selectRandomLane(engine); }
+      action: () => {
+        this.selectRandomLane(engine);
+      },
     });
 
     // TODO: shouldnt the timer be a child of the actor?
     engine.currentScene.add(timer);
     timer.start();
-
 
     this.on("exitviewport", () => {
       const camera = this.scene.camera;
@@ -66,7 +65,7 @@ export class EnemyCar extends Car {
 
     // Listen for collisionstart event
     this.on("collisionstart", (event) => {
-      console.log('Enemy collided with:', event.other.owner);
+      console.log("Enemy collided with:", event.other.owner);
       // TODO: create property to make explicit that this is the Player, instead of carType
       if (event.other.owner.carType === "camaro") {
         console.log("hit by player");
@@ -77,20 +76,19 @@ export class EnemyCar extends Car {
         const timer = new Timer({
           interval: 500,
           repeats: false,
-          action: () => { this.canSteer = true; }
+          action: () => {
+            this.canSteer = true;
+          },
         });
 
         this.scene.add(timer);
 
         timer.start();
-
       }
     });
   }
-  
 
   update(engine, delta) {
-
     const lanes = this.scene.getLanes(); // Get all lanes
 
     if (this.selectedLane > lanes.length - 1) {
@@ -105,13 +103,17 @@ export class EnemyCar extends Car {
     // const error = closestLane - this.pos.x;
 
     const error = lanes[this.selectedLane] - this.pos.x;
+    const deltaError = error - this.lastError;
+    this.lastError = error;
 
-    if (this.canSteer && Math.abs(error) > 10) {
-        if (Math.sign(error) < 0) {
-            this.steerLeft();
-        } else {
-            this.steerRight();
-        }
+    // Calculate the steering direction based on the error
+    // use deltaError to reduce overshoot
+    if (this.canSteer && Math.abs(error + deltaError * 20) > 10) {
+      if (Math.sign(error) < 0) {
+        this.steerLeft();
+      } else {
+        this.steerRight();
+      }
     }
 
     super.update(engine, delta);
