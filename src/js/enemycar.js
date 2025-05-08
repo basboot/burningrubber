@@ -1,4 +1,4 @@
-import { Actor, Keys, Timer, Vector } from "excalibur";
+import { Actor, Keys, Timer, vec, Vector } from "excalibur";
 import { CarSprites } from "./resources";
 import { Car } from "./car.js";
 import { Obstacle } from "./obstacle.js";
@@ -80,6 +80,9 @@ export class EnemyCar extends Car {
           // but give player points when crashed within 2 secs
           this.canSteer = false;
           this.hitByPLayer = true;
+
+          // add extra forward impact
+          this.body.applyLinearImpulse(vec(0, -5000));
 
           const timer = new Timer({
             interval: 10000,

@@ -21,7 +21,7 @@ export class Level extends Scene {
     this.tileHeight = 100; // Height of each tile
 
     // Create a car in the middle of the screen, moving upward
-    const car = new Player("camaro", new Vector(400, 0), new Vector(0, -200), 200, 500);
+    const car = new Player("camaro", new Vector(400, 0), new Vector(0, -200), 200, 400);
     this.player = car;
 
     this.add(car);
@@ -42,7 +42,7 @@ export class Level extends Scene {
     // Lock the camera to follow the car in the y-direction only, bit behind
     this.camera.update = (engine, elapsed) => {
       // Add the offset to the normal camera position
-      const actorPosition = new Vector(400, this.player.pos.y - 125);
+      const actorPosition = new Vector(400, this.player.pos.y);
       this.camera.pos = actorPosition;
     };
 

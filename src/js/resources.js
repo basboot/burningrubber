@@ -1,10 +1,11 @@
-import { ImageSource, Sprite, Loader } from "excalibur";
+import { ImageSource, Sprite, Loader, FontSource } from "excalibur";
 
 // Add your resources here
 const Resources = {
   Fish: new ImageSource("images/fish.png"),
   Cars: new ImageSource("images/cars.png"),
   Explosion: new ImageSource("images/explosionanimation.png"),
+  PixelFont: new FontSource("fonts/PressStart2P-Regular.ttf", "PressStart"),
 };
 
 // Atlas data for the spritesheet
@@ -75,6 +76,8 @@ for (const [name, data] of Object.entries(CarAtlas)) {
     sourceView: { x: data.x, y: data.y, width: data.width, height: data.height },
   });
 }
+
+// PressStart2P-Regular.ttf
 
 const ResourceLoader = new Loader();
 for (let res of Object.values(Resources)) {

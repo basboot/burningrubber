@@ -1,7 +1,15 @@
-import { Actor, Animation, AnimationStrategy, SpriteSheet } from "excalibur";
+import { Actor, Animation, AnimationStrategy, Color, FontUnit, Label, SpriteSheet, Timer, Vector } from "excalibur";
 import { Resources } from "./resources";
 
 export class Explosion extends Actor {
+  points;
+
+  constructor(points = 1000, options) {
+    super(options);
+
+    this.points = points; // Set the points for the explosion
+  }
+
   onInitialize(engine) {
     const spriteSheet = SpriteSheet.fromImageSource({
       image: Resources.Explosion,
@@ -16,8 +24,8 @@ export class Explosion extends Actor {
     const animation = Animation.fromSpriteSheet(
       spriteSheet,
       Array.from({ length: 11 }, (_, i) => i), // Frame indices
-      50, // Duration per frame in milliseconds
-      AnimationStrategy.Freeze // Animation strategy
+      25, // Duration per frame in milliseconds
+      AnimationStrategy.End // Animation strategy
     );
 
     animation.events.on("end", (a) => {
@@ -29,6 +37,27 @@ export class Explosion extends Actor {
   }
 
   endExplosion() {
-    this.kill();
+    const score = new Label({
+      text: `${this.points}`,
+      pos: new Vector(0, 0),
+      font: Resources.PixelFont.toFont({
+        unit: FontUnit.Px,
+        size: 20,
+        color: Color.Yellow,
+      }),
+    });
+    this.addChild(score);
+
+    score.actions.fade(0, 1000);
+
+    const timer = new Timer({
+      interval: 1000,
+      repeats: false,
+      action: () => {
+        this.kill();
+      },
+    });
+
+    this.scene.add(timer);
   }
 }
