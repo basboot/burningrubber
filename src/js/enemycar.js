@@ -25,6 +25,7 @@ export class EnemyCar extends Car {
     this.canSteer = true;
 
     this.lastError = 0;
+    this.hitByPLayer = false;
   }
 
   selectRandomLane(engine) {
@@ -70,11 +71,13 @@ export class EnemyCar extends Car {
       if (event.other.owner.carType === "camaro") {
         console.log("hit by player");
 
-        // disable steering 0.5sec when hit by player
+        // disable steering 1sec when hit by player
+        // but give player points when crashed within 2 secs
         this.canSteer = false;
+        this.hitByPLayer = true;
 
         const timer = new Timer({
-          interval: 500,
+          interval: 10000,
           repeats: false,
           action: () => {
             this.canSteer = true;
@@ -83,7 +86,18 @@ export class EnemyCar extends Car {
 
         this.scene.add(timer);
 
+        const timer2 = new Timer({
+          interval: 2000,
+          repeats: false,
+          action: () => {
+            this.hitByPLayer = false;
+          },
+        });
+
+        this.scene.add(timer2);
+
         timer.start();
+        timer2.start();
       }
     });
   }
@@ -117,5 +131,13 @@ export class EnemyCar extends Car {
     }
 
     super.update(engine, delta);
+  }
+
+  handleObstacleCollision(obstacle) {
+    if (this.hitByPLayer) {
+      // hit by player
+      this.scene.addExplosion(this.pos);
+      this.kill();
+    }
   }
 }

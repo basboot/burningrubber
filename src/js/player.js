@@ -27,7 +27,7 @@ export class Player extends Car {
     super.onInitialize(engine);
   }
 
-  update(engine, delta) {
+  onPreUpdate(engine, delta) {
     // console.log(this.pos);
     if (engine.input.keyboard.isHeld(Keys.ArrowUp)) {
       this.useThrottle();
@@ -59,7 +59,5 @@ export class Player extends Car {
       const s = 1 + Math.sin(t);
       this.scale = new Vector(s, s);
     }
-
-    super.update(engine, delta);
   }
 }

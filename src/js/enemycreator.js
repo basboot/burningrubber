@@ -11,8 +11,8 @@ export class EnemyCreator extends Actor {
   onInitialize(engine) {
     // Create a timer that fires every 1 second (1000 ms) and repeats 5 times
     const timer = new Timer({
-      randomRange: [0, 2000],
-      interval: 1000,
+      randomRange: [0, 500],
+      interval: 500,
       repeats: true,
       action: () => {
         this.spawnEnemy(engine);
@@ -37,12 +37,7 @@ export class EnemyCreator extends Actor {
       const lane = Math.floor(Math.random() * 3);
       // avoid spawning in same place
       if (this.lastEnemyInLane[lane + 2] > topOfScreen + 50) {
-        const enemyCar = new EnemyCar(
-          new Vector(300 + 100 * lane, topOfScreen),
-          new Vector(0, -200),
-          425 + Math.random() * 50,
-          700
-        );
+        const enemyCar = new EnemyCar(new Vector(300 + 100 * lane, topOfScreen), new Vector(0, -200), 100, 700);
 
         console.log("spawn enemy at", enemyCar.pos);
 

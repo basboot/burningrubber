@@ -4,6 +4,7 @@ import { ImageSource, Sprite, Loader } from "excalibur";
 const Resources = {
   Fish: new ImageSource("images/fish.png"),
   Cars: new ImageSource("images/cars.png"),
+  Explosion: new ImageSource("images/explosionanimation.png"),
 };
 
 // Atlas data for the spritesheet

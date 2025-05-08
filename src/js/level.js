@@ -5,6 +5,7 @@ import { Player } from "./player.js";
 import { EnemyCar } from "./enemycar.js";
 import { Obstacle } from "./obstacle.js";
 import { EnemyCreator } from "./enemycreator.js";
+import { Explosion } from "./explosion.js";
 
 export class Level extends Scene {
   constructor() {
@@ -20,7 +21,7 @@ export class Level extends Scene {
     this.tileHeight = 100; // Height of each tile
 
     // Create a car in the middle of the screen, moving upward
-    const car = new Player("camaro", new Vector(400, 225), new Vector(0, -200), 200, 500);
+    const car = new Player("camaro", new Vector(400, 0), new Vector(0, -200), 200, 500);
     this.player = car;
 
     this.add(car);
@@ -92,5 +93,11 @@ export class Level extends Scene {
     console.log(this.lanes);
 
     return this.lanes[tileIndex];
+  }
+
+  addExplosion(pos) {
+    const explosion = new Explosion();
+    explosion.pos = pos;
+    this.add(explosion);
   }
 }

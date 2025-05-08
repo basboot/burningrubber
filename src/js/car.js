@@ -27,6 +27,7 @@ export class Car extends Actor {
       console.log("Actor1 collided with:", event.other.owner instanceof Obstacle);
       if (event.other.owner instanceof Obstacle) {
         this.gameOver = true;
+        this.handleObstacleCollision();
       }
     });
 
@@ -78,10 +79,5 @@ export class Car extends Actor {
     super.update(engine, delta);
   }
 
-  handleObstacleCollision(obstacle) {
-    // Handle what happens when the car collides with an obstacle
-    console.log("Handling collision with obstacle:", obstacle);
-    // Example: Stop the car
-    this.vel = vec(0, 0);
-  }
+  handleObstacleCollision(obstacle) {}
 }
