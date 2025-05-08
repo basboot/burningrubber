@@ -71,33 +71,39 @@ export class EnemyCar extends Car {
       if (event.other.owner.carType === "camaro") {
         console.log("hit by player");
 
-        // disable steering 1sec when hit by player
-        // but give player points when crashed within 2 secs
-        this.canSteer = false;
-        this.hitByPLayer = true;
+        // overlap = landing on top
+        if (event.other.owner.collider.bounds.overlaps(this.collider.bounds, 10)) {
+          this.scene.addExplosion(this.pos);
+          this.kill();
+        } else {
+          // disable steering 1sec when hit by player
+          // but give player points when crashed within 2 secs
+          this.canSteer = false;
+          this.hitByPLayer = true;
 
-        const timer = new Timer({
-          interval: 10000,
-          repeats: false,
-          action: () => {
-            this.canSteer = true;
-          },
-        });
+          const timer = new Timer({
+            interval: 10000,
+            repeats: false,
+            action: () => {
+              this.canSteer = true;
+            },
+          });
 
-        this.scene.add(timer);
+          this.scene.add(timer);
 
-        const timer2 = new Timer({
-          interval: 2000,
-          repeats: false,
-          action: () => {
-            this.hitByPLayer = false;
-          },
-        });
+          const timer2 = new Timer({
+            interval: 2000,
+            repeats: false,
+            action: () => {
+              this.hitByPLayer = false;
+            },
+          });
 
-        this.scene.add(timer2);
+          this.scene.add(timer2);
 
-        timer.start();
-        timer2.start();
+          timer.start();
+          timer2.start();
+        }
       }
     });
   }
