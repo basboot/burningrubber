@@ -50,7 +50,7 @@ export class Level extends Scene {
     // Lock the camera to follow the car in the y-direction only, bit behind
     this.camera.update = (engine, elapsed) => {
       // Add the offset to the normal camera position
-      const actorPosition = new Vector(400, this.player.pos.y);
+      const actorPosition = new Vector(400, this.player.pos.y - 100);
       this.camera.pos = actorPosition;
     };
 

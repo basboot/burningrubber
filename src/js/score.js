@@ -4,6 +4,8 @@ import { Resources } from "./resources";
 export class Score extends ScreenElement {
   score;
   scoreValue = 0; // TODO: use better names
+  highscoreValue = 13456789; // TODO: use better names
+  highscoreName = "BAS"; // TODO: use better names
   multiplierValue = 1;
 
   constructor(car) {
@@ -51,11 +53,32 @@ export class Score extends ScreenElement {
     this.addChild(score);
 
     this.score = score;
+
+    const highscore = new Label({
+      text: `0`,
+      pos: new Vector(770, 10),
+      font: Resources.PixelFont.toFont({
+        unit: FontUnit.Px,
+        size: 20,
+        color: Color.Yellow,
+        textAlign: TextAlign.Right,
+      }),
+      opacity: 0.25,
+    });
+    this.addChild(highscore);
+
+    this.highscore = highscore;
   }
 
   onPreUpdate(engine, delta) {
     this.scoreValue += Math.round(this.car.vel.y * -1) * this.multiplierValue;
+
+    if (this.scoreValue > this.highscoreValue) {
+      this.highscoreValue = this.scoreValue;
+      this.highscoreName = "---";
+    }
     this.score.text = `${this.scoreValue}`;
+    this.highscore.text = `${this.highscoreName} ${this.highscoreValue}`;
     this.multiplier.text = `x ${this.multiplierValue}`;
   }
 }
