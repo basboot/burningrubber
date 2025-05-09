@@ -24,7 +24,7 @@ export class Game extends Engine {
 
   async startGame() {
     // Load the MIDI data
-    const response = await fetch("/public/music/popcorn1.json");
+    const response = await fetch("/music/popcorn1.json");
     const midiData = await response.json();
 
     // Initialize and play the music
