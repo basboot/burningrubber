@@ -1,6 +1,7 @@
 import { Actor, CollisionType, Keys, Vector } from "excalibur";
 import { CarSprites } from "./resources";
 import { Car } from "./car.js";
+import { GameState } from "./game.js";
 
 export class Player extends Car {
   jumping;
@@ -28,27 +29,33 @@ export class Player extends Car {
   }
 
   onPreUpdate(engine, delta) {
-    // console.log(this.pos);
-    if (!this.jumping) {
-      if (engine.input.keyboard.isHeld(Keys.ArrowUp)) {
-        this.useThrottle();
-      }
-      if (engine.input.keyboard.isHeld(Keys.ArrowDown)) {
-        this.useBreak();
-      }
+    if (this.gameOver) {
+      engine.currentScene.gameState = GameState.GAME_OVER;
     }
-    if (engine.input.keyboard.isHeld(Keys.ArrowLeft)) {
+
+    if (engine.currentScene.gameState === GameState.PLAYING) {
+      // console.log(this.pos);
       if (!this.jumping) {
-        this.steerLeft();
-      } else {
-        this.vel.x = -150;
+        if (engine.input.keyboard.isHeld(Keys.ArrowUp)) {
+          this.useThrottle();
+        }
+        if (engine.input.keyboard.isHeld(Keys.ArrowDown)) {
+          this.useBreak();
+        }
       }
-    }
-    if (engine.input.keyboard.isHeld(Keys.ArrowRight)) {
-      if (!this.jumping) {
-        this.steerRight();
-      } else {
-        this.vel.x = 150;
+      if (engine.input.keyboard.isHeld(Keys.ArrowLeft)) {
+        if (!this.jumping) {
+          this.steerLeft();
+        } else {
+          this.vel.x = -150;
+        }
+      }
+      if (engine.input.keyboard.isHeld(Keys.ArrowRight)) {
+        if (!this.jumping) {
+          this.steerRight();
+        } else {
+          this.vel.x = 150;
+        }
       }
     }
 

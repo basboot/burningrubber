@@ -1,5 +1,6 @@
 import { Color, FontUnit, Label, Rectangle, ScreenElement, TextAlign, Vector } from "excalibur";
 import { Resources } from "./resources";
+import { GameState } from "./game";
 
 export class Score extends ScreenElement {
   score;
@@ -71,11 +72,15 @@ export class Score extends ScreenElement {
   }
 
   onPreUpdate(engine, delta) {
-    this.scoreValue += Math.round(this.car.vel.y * -1) * this.multiplierValue;
+    // only achieve points while playing
+    if (engine.currentScene.gameState === GameState.PLAYING) {
+      this.scoreValue += Math.round(this.car.vel.y * -1) * this.multiplierValue;
+    }
 
     if (this.scoreValue > this.highscoreValue) {
       this.highscoreValue = this.scoreValue;
-      this.highscoreName = "---";
+      this.highscoreName = "JIJ";
+      this.highscore.opacity = 1;
     }
     this.score.text = `${this.scoreValue}`;
     this.highscore.text = `${this.highscoreName} ${this.highscoreValue}`;

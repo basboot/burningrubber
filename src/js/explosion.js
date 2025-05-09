@@ -30,9 +30,9 @@ export class Explosion extends Actor {
 
     this.endExplosion();
 
-    animation.events.on("end", (a) => {
-      console.log("explosion ended");
-    });
+    // animation.events.on("end", (a) => {
+    //   console.log("explosion ended");
+    // });
 
     this.graphics.use(animation);
   }

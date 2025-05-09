@@ -6,21 +6,14 @@ import { Player } from "tone";
 
 export class EnemyCar extends Car {
   constructor(initialPosition, initialVelocity, minSpeed, maxSpeed) {
-    console.log("EnemyCar constructed");
-
     // TODO: add information to list to resources
     const carTypes = ["bmw", "lexus", "bike"];
     const masses = [1500, 500, 5];
     const selected = Math.floor(Math.random() * carTypes.length);
 
     super(carTypes[selected], initialPosition, initialVelocity, minSpeed, maxSpeed);
-    console.log("EnemyCar constructed, end");
 
     this.body.mass = masses[selected];
-
-    this.on("initialize", (event) => {
-      console.log("Init of enemy");
-    });
 
     this.canSteer = true;
 
@@ -33,8 +26,6 @@ export class EnemyCar extends Car {
   }
 
   onInitialize(engine) {
-    console.log("EnemyCar initialized at:", this.pos);
-
     super.onInitialize(engine);
 
     this.selectRandomLane(engine);
@@ -60,17 +51,13 @@ export class EnemyCar extends Car {
       // Remove the actor only if it exits at the bottom of the screen
       if (this.pos.y > bottomOfScreen) {
         this.kill();
-        console.log("enemy has left the building");
       }
     });
 
     // Listen for collisionstart event
     this.on("collisionstart", (event) => {
-      console.log("Enemy collided with:", event.other.owner);
       // TODO: create property to make explicit that this is the Player, instead of carType
       if (event.other.owner.carType === "camaro") {
-        console.log("hit by player");
-
         // overlap = landing on top
         if (event.other.owner.collider.bounds.overlaps(this.collider.bounds, 15)) {
           this.scene.addExplosion(this.pos, 2000);

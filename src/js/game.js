@@ -4,6 +4,12 @@ import { Resources, ResourceLoader } from "./resources.js";
 import { Level } from "./level.js";
 import { MusicPlayer } from "./musicPlayer.js";
 
+export const GameState = Object.freeze({
+  IDLE: "idle",
+  PLAYING: "playing",
+  GAME_OVER: "game_over",
+});
+
 export class Game extends Engine {
   constructor() {
     super({

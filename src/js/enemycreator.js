@@ -27,7 +27,6 @@ export class EnemyCreator extends Actor {
   }
 
   spawnEnemy(engine) {
-    console.log("spawn");
     const camera = this.scene.camera;
     // TODO: check car size
     const topOfScreen = camera.pos.y - this.scene.engine.screen.resolution.height / 2 - 50;
@@ -38,8 +37,6 @@ export class EnemyCreator extends Actor {
       // avoid spawning in same place
       if (this.lastEnemyInLane[lane + 2] > topOfScreen + 50) {
         const enemyCar = new EnemyCar(new Vector(300 + 100 * lane, topOfScreen), new Vector(0, -200), 300, 700);
-
-        console.log("spawn enemy at", enemyCar.pos);
 
         // Add the enemy car to the scene explicitly
         // enemyCar._initialize(engine);
