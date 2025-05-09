@@ -69,4 +69,9 @@ export class Player extends Car {
       this.scale = new Vector(s, s);
     }
   }
+
+  handleObstacleCollision() {
+    this.kill();
+    this.scene.addExplosion(this.pos, 0);
+  }
 }

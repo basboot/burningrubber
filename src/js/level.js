@@ -9,6 +9,7 @@ import { Explosion } from "./explosion.js";
 import { Speedometer } from "./speedometer.js";
 import { Score } from "./score.js";
 import { GameState } from "./game.js";
+import { GameOver } from "./gameover.js";
 
 export class Level extends Scene {
   gameState = GameState.IDLE;
@@ -105,5 +106,13 @@ export class Level extends Scene {
     this.add(explosion);
     // TODO: create methods
     this.score.multiplierValue += value;
+  }
+
+  onPreUpdate(engine, delta) {
+    if (this.gameState === GameState.PLAYING && this.player.gameOver === true) {
+      // TODO: check game over logic
+      this.gameState = GameState.GAME_OVER;
+      this.add(new GameOver());
+    }
   }
 }

@@ -38,6 +38,8 @@ export class Explosion extends Actor {
   }
 
   endExplosion() {
+    if (this.points === 0) return;
+
     const score = new Label({
       text: `${this.points}`,
       pos: new Vector(0, 0),
