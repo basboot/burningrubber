@@ -6,6 +6,7 @@ import { EnemyCar } from "./enemycar.js";
 import { Obstacle } from "./obstacle.js";
 import { EnemyCreator } from "./enemycreator.js";
 import { Explosion } from "./explosion.js";
+import { Speedometer } from "./speedometer.js";
 
 export class Level extends Scene {
   constructor() {
@@ -25,6 +26,9 @@ export class Level extends Scene {
     this.player = car;
 
     this.add(car);
+
+    this.speedometer = new Speedometer(car);
+    this.add(this.speedometer);
 
     // Add road bars to the middle of the screen
     const barSpacing = 100; // Space between bars
