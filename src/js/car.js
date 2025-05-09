@@ -48,7 +48,7 @@ export class Car extends Actor {
   }
 
   useThrottle() {
-    this.vel.y -= 15; // Increase speed (move faster upward)
+    this.vel.y -= 5; // Increase speed (move faster upward)
   }
 
   useBreak() {
@@ -57,7 +57,7 @@ export class Car extends Actor {
 
   update(engine, delta) {
     // Add drag
-    this.vel.y += 5;
+    this.vel.y += 0.005 * -this.vel.y;
     // Clamp speed (reverse order because negative y direction)
     this.vel.y = clamp(this.vel.y, -this.maxSpeed, -this.minSpeed);
 

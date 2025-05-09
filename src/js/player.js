@@ -29,11 +29,13 @@ export class Player extends Car {
 
   onPreUpdate(engine, delta) {
     // console.log(this.pos);
-    if (engine.input.keyboard.isHeld(Keys.ArrowUp)) {
-      this.useThrottle();
-    }
-    if (engine.input.keyboard.isHeld(Keys.ArrowDown)) {
-      this.useBreak();
+    if (!this.jumping) {
+      if (engine.input.keyboard.isHeld(Keys.ArrowUp)) {
+        this.useThrottle();
+      }
+      if (engine.input.keyboard.isHeld(Keys.ArrowDown)) {
+        this.useBreak();
+      }
     }
     if (engine.input.keyboard.isHeld(Keys.ArrowLeft)) {
       if (!this.jumping) {

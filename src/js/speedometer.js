@@ -38,6 +38,6 @@ export class Speedometer extends ScreenElement {
   }
 
   onPreUpdate(engine, delta) {
-    this.score.text = `${this.car.vel.y * -1} km/u`;
+    this.score.text = `${Math.round(this.car.vel.y * -1)} km/u`;
   }
 }
