@@ -7,6 +7,7 @@ import { Obstacle } from "./obstacle.js";
 import { EnemyCreator } from "./enemycreator.js";
 import { Explosion } from "./explosion.js";
 import { Speedometer } from "./speedometer.js";
+import { Score } from "./score.js";
 
 export class Level extends Scene {
   constructor() {
@@ -29,6 +30,9 @@ export class Level extends Scene {
 
     this.speedometer = new Speedometer(car);
     this.add(this.speedometer);
+
+    this.score = new Score(car);
+    this.add(this.score);
 
     // Add road bars to the middle of the screen
     const barSpacing = 100; // Space between bars
@@ -99,9 +103,11 @@ export class Level extends Scene {
     return this.lanes[tileIndex];
   }
 
-  addExplosion(pos) {
-    const explosion = new Explosion();
+  addExplosion(pos, value) {
+    const explosion = new Explosion(value);
     explosion.pos = pos;
     this.add(explosion);
+    // TODO: create methods
+    this.score.multiplierValue += value;
   }
 }

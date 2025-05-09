@@ -8,7 +8,7 @@ export class Obstacle extends Actor {
       pos: position,
       width: width,
       height: height,
-      color: Color.Green,
+      color: new Color(0, 150, 0), // Darker green
       collisionType: CollisionType.Fixed, // Fixed collision type
     });
   }

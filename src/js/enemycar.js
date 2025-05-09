@@ -72,8 +72,8 @@ export class EnemyCar extends Car {
         console.log("hit by player");
 
         // overlap = landing on top
-        if (event.other.owner.collider.bounds.overlaps(this.collider.bounds, 10)) {
-          this.scene.addExplosion(this.pos);
+        if (event.other.owner.collider.bounds.overlaps(this.collider.bounds, 15)) {
+          this.scene.addExplosion(this.pos, 2000);
           this.kill();
         } else {
           // disable steering 1sec when hit by player
@@ -145,7 +145,7 @@ export class EnemyCar extends Car {
   handleObstacleCollision(obstacle) {
     if (this.hitByPLayer) {
       // hit by player
-      this.scene.addExplosion(this.pos);
+      this.scene.addExplosion(this.pos, 1000);
       this.kill();
     }
   }

@@ -44,7 +44,7 @@ export class Explosion extends Actor {
       font: Resources.PixelFont.toFont({
         unit: FontUnit.Px,
         size: 20,
-        color: Color.Yellow,
+        color: Color.Red,
       }),
     });
     this.addChild(score);

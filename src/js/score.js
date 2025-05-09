@@ -1,13 +1,15 @@
 import { Color, FontUnit, Label, Rectangle, ScreenElement, TextAlign, Vector } from "excalibur";
 import { Resources } from "./resources";
 
-export class Speedometer extends ScreenElement {
+export class Score extends ScreenElement {
   score;
+  scoreValue = 0; // TODO: use better names
+  multiplierValue = 1;
 
   constructor(car) {
     super({
       x: 10,
-      y: 450,
+      y: 10,
       z: 100,
     });
 
@@ -16,15 +18,29 @@ export class Speedometer extends ScreenElement {
   onInitialize(engine) {
     this.graphics.use(
       new Rectangle({
-        width: 200,
+        width: 780,
         height: 40,
         color: Color.Black,
       })
     );
 
+    const multiplier = new Label({
+      text: `0`,
+      pos: new Vector(10, 10),
+      font: Resources.PixelFont.toFont({
+        unit: FontUnit.Px,
+        size: 20,
+        color: Color.Red,
+        textAlign: TextAlign.Left,
+      }),
+    });
+    this.addChild(multiplier);
+
+    this.multiplier = multiplier;
+
     const score = new Label({
       text: `0`,
-      pos: new Vector(180, 10),
+      pos: new Vector(770, 10),
       font: Resources.PixelFont.toFont({
         unit: FontUnit.Px,
         size: 20,
@@ -38,6 +54,8 @@ export class Speedometer extends ScreenElement {
   }
 
   onPreUpdate(engine, delta) {
-    this.score.text = `${Math.round(this.car.vel.y * -1)} km/u`;
+    this.scoreValue += Math.round(this.car.vel.y * -1) * this.multiplierValue;
+    this.score.text = `${this.scoreValue}`;
+    this.multiplier.text = `x ${this.multiplierValue}`;
   }
 }
