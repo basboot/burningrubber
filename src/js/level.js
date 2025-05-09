@@ -8,14 +8,18 @@ import { EnemyCreator } from "./enemycreator.js";
 import { Explosion } from "./explosion.js";
 import { Speedometer } from "./speedometer.js";
 import { Score } from "./score.js";
+import { GameState } from "./game.js";
 
 export class Level extends Scene {
+  gameState = GameState.IDLE;
+
   constructor() {
     super(); // Call the superclass constructor
     this.lanes = []; // Initialize lanes as an empty array
   }
 
   async onInitialize(engine) {
+    this.gameState = GameState.PLAYING;
     // Set the background color to grey
     this.backgroundColor = Color.Gray;
 
@@ -59,9 +63,6 @@ export class Level extends Scene {
     this.generateLevel(layout);
 
     this.add(new EnemyCreator());
-
-    console.log("init finished of Level");
-    console.log(this.lanes);
   }
 
   async loadLevelLayout(filePath) {
@@ -93,12 +94,7 @@ export class Level extends Scene {
   }
 
   getLanes(offset = 0) {
-    console.log(this.player.pos.y);
-    console.log(this.tileHeight);
     const tileIndex = Math.floor(-this.player.pos.y / this.tileHeight);
-
-    console.log(this.tileIndex);
-    console.log(this.lanes);
 
     return this.lanes[tileIndex];
   }

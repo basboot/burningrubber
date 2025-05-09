@@ -24,7 +24,6 @@ export class Car extends Actor {
 
     // Listen for collisionstart event
     this.on("collisionstart", (event) => {
-      console.log("Actor1 collided with:", event.other.owner instanceof Obstacle);
       if (event.other.owner instanceof Obstacle) {
         this.gameOver = true;
         this.handleObstacleCollision();
