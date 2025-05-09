@@ -28,9 +28,10 @@ export class Explosion extends Actor {
       AnimationStrategy.End // Animation strategy
     );
 
+    this.endExplosion();
+
     animation.events.on("end", (a) => {
       console.log("explosion ended");
-      this.endExplosion();
     });
 
     this.graphics.use(animation);
@@ -49,6 +50,7 @@ export class Explosion extends Actor {
     this.addChild(score);
 
     score.actions.fade(0, 1000);
+    score.vel.y = -200;
 
     const timer = new Timer({
       interval: 1000,
