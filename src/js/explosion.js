@@ -35,6 +35,8 @@ export class Explosion extends Actor {
     // });
 
     this.graphics.use(animation);
+
+    Resources.Explosion1.play(Math.random() * 0.5 + 0.25);
   }
 
   endExplosion() {

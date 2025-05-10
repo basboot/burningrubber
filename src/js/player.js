@@ -1,5 +1,5 @@
 import { Actor, CollisionType, Keys, Vector } from "excalibur";
-import { CarSprites } from "./resources";
+import { CarSprites, Resources } from "./resources";
 import { Car } from "./car.js";
 import { GameState } from "./game.js";
 
@@ -20,6 +20,7 @@ export class Player extends Car {
         this.body.collisionType = CollisionType.PreventCollision;
         this.jumpTime = this.scene.engine.clock.now();
         this.jumping = true;
+        Resources.Jump.play(0.5);
       }
     });
 

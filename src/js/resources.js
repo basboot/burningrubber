@@ -1,11 +1,15 @@
-import { ImageSource, Sprite, Loader, FontSource } from "excalibur";
+import { ImageSource, Sprite, Loader, FontSource, Sound } from "excalibur";
 
 // Add your resources here
+// TODO: Add categories
 const Resources = {
   Fish: new ImageSource("images/fish.png"),
   Cars: new ImageSource("images/cars.png"),
   Explosion: new ImageSource("images/explosionanimation.png"),
   PixelFont: new FontSource("fonts/PressStart2P-Regular.ttf", "PressStart"),
+  Explosion1: new Sound("sounds/explosion-312361.mp3"),
+  Crash1: new Sound("sounds/clank-car-crash-collision-6206.mp3"),
+  Jump: new Sound("sounds/funny-spring-jump-140378.mp3"),
 };
 
 // Atlas data for the spritesheet

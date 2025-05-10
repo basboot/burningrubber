@@ -1,5 +1,5 @@
 import { Actor, Keys, Timer, vec, Vector } from "excalibur";
-import { CarSprites } from "./resources";
+import { CarSprites, Resources } from "./resources";
 import { Car } from "./car.js";
 import { Obstacle } from "./obstacle.js";
 import { Player } from "tone";
@@ -63,6 +63,7 @@ export class EnemyCar extends Car {
           this.scene.addExplosion(this.pos, 2000);
           this.kill();
         } else {
+          Resources.Crash1.play(Math.random() * 0.2 + 0.1);
           // disable steering 1sec when hit by player
           // but give player points when crashed within 2 secs
           this.canSteer = false;
