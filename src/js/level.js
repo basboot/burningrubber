@@ -1,4 +1,4 @@
-import { Scene, Vector, Color, Axis } from "excalibur";
+import { Scene, Vector, Color, Axis, Keys } from "excalibur";
 import { Car } from "./car.js";
 import { RoadBar } from "./roadbar.js";
 import { Player } from "./player.js";
@@ -64,6 +64,13 @@ export class Level extends Scene {
     this.generateLevel(layout);
 
     this.add(new EnemyCreator());
+
+    engine.input.keyboard.on("press", (e) => {
+      if (e.key === Keys.S) {
+        console.log("S key was pressed!");
+        engine.toggleEffect();
+      }
+    });
   }
 
   async loadLevelLayout(filePath) {

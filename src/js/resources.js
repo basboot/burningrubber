@@ -1,5 +1,5 @@
 import { ImageSource, Sprite, Loader, FontSource, Sound } from "excalibur";
-import { SoundEffect } from "../soundeffect";
+import { SoundEffect } from "./soundeffect";
 
 // Add your resources here
 // TODO: Add categories

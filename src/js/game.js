@@ -3,6 +3,7 @@ import { Engine, DisplayMode, SolverStrategy, Timer } from "excalibur";
 import { Resources, ResourceLoader } from "./resources.js";
 import { Level } from "./level.js";
 import { MusicPlayer } from "./musicPlayer.js";
+import { GameSound, GameSoundEvent } from "./gamesoundevent.js";
 
 export const GameState = Object.freeze({
   IDLE: "idle",
@@ -11,6 +12,9 @@ export const GameState = Object.freeze({
 });
 
 export class Game extends Engine {
+  isEffectOn = false;
+  isMusicOn = false;
+
   constructor() {
     super({
       width: 800,
@@ -44,6 +48,16 @@ export class Game extends Engine {
     const level = new Level(); // Create the Level scene
     this.add("level", level); // Add the scene to the game
     await this.goToScene("level"); // Switch to the Level scene
+  }
+
+  toggleEffect() {
+    this.isEffectOn = !this.isEffectOn;
+
+    console.log("effect on", this.isEffectOn);
+    this.events.emit(
+      "gameSoundChange",
+      new GameSoundEvent(this.isEffectOn ? GameSound.EFFECT_ON : GameSound.EFFECT_OFF)
+    );
   }
 }
 
