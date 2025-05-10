@@ -5,15 +5,10 @@ import { Obstacle } from "./obstacle.js";
 import { Player } from "tone";
 
 export class EnemyCar extends Car {
-  constructor(initialPosition, initialVelocity, minSpeed, maxSpeed) {
-    // TODO: add information to list to resources
-    const carTypes = ["bmw", "lexus", "bike"];
-    const masses = [1500, 500, 5];
-    const selected = Math.floor(Math.random() * carTypes.length);
+  constructor(initialPosition, initialVelocity, minSpeed, maxSpeed, carType, mass) {
+    super(carType, initialPosition, initialVelocity, minSpeed, maxSpeed);
 
-    super(carTypes[selected], initialPosition, initialVelocity, minSpeed, maxSpeed);
-
-    this.body.mass = masses[selected];
+    this.body.mass = mass;
 
     this.canSteer = true;
 
@@ -60,7 +55,7 @@ export class EnemyCar extends Car {
       if (event.other.owner.carType === "camaro") {
         // overlap = landing on top
         if (event.other.owner.collider.bounds.overlaps(this.collider.bounds, 15)) {
-          this.scene.addExplosion(this.pos, 2000);
+          this.scene.addExplosion(this.pos, this.body.mass);
           this.kill();
         } else {
           Resources.Crash1.play(Math.random() * 0.2 + 0.1);
@@ -133,7 +128,7 @@ export class EnemyCar extends Car {
   handleObstacleCollision(obstacle) {
     if (this.hitByPLayer) {
       // hit by player
-      this.scene.addExplosion(this.pos, 1000);
+      this.scene.addExplosion(this.pos, this.body.mass);
       this.kill();
     }
   }
