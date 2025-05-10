@@ -4,10 +4,10 @@ import { GameState } from "./game";
 
 export class Score extends ScreenElement {
   score;
-  scoreValue = 0; // TODO: use better names
-  highscoreValue = 13456789; // TODO: use better names
+  scoreValue = BigInt(0); // TODO: use better names
+  highscoreValue = BigInt(13456789); // TODO: use better names
   highscoreName = "BAS"; // TODO: use better names
-  multiplierValue = 1;
+  multiplierValue = BigInt(1);
 
   constructor(car) {
     super({
@@ -74,7 +74,7 @@ export class Score extends ScreenElement {
   onPreUpdate(engine, delta) {
     // only achieve points while playing
     if (engine.currentScene.gameState === GameState.PLAYING) {
-      this.scoreValue += Math.round(this.car.vel.y * -1) * this.multiplierValue;
+      this.scoreValue += BigInt(Math.round(this.car.vel.y * -1)) * this.multiplierValue;
     }
 
     if (this.scoreValue > this.highscoreValue) {

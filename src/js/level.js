@@ -112,7 +112,7 @@ export class Level extends Scene {
     explosion.pos = pos;
     this.add(explosion);
     // TODO: create methods
-    this.score.multiplierValue += value;
+    this.score.multiplierValue += BigInt(value);
   }
 
   onPreUpdate(engine, delta) {
