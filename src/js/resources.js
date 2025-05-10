@@ -1,4 +1,5 @@
 import { ImageSource, Sprite, Loader, FontSource, Sound } from "excalibur";
+import { SoundEffect } from "../soundeffect";
 
 // Add your resources here
 // TODO: Add categories
@@ -7,9 +8,9 @@ const Resources = {
   Cars: new ImageSource("images/cars.png"),
   Explosion: new ImageSource("images/explosionanimation.png"),
   PixelFont: new FontSource("fonts/PressStart2P-Regular.ttf", "PressStart"),
-  Explosion1: new Sound("sounds/explosion-312361.mp3"),
-  Crash1: new Sound("sounds/clank-car-crash-collision-6206.mp3"),
-  Jump: new Sound("sounds/funny-spring-jump-140378.mp3"),
+  Explosion1: new SoundEffect("sounds/explosion-312361.mp3"),
+  Crash1: new SoundEffect("sounds/clank-car-crash-collision-6206.mp3"),
+  Jump: new SoundEffect("sounds/funny-spring-jump-140378.mp3"),
 };
 
 // Atlas data for the spritesheet
