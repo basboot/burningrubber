@@ -1,6 +1,6 @@
 import { Color, FontUnit, Label, Rectangle, ScreenElement, TextAlign, Vector } from "excalibur";
 import { Resources } from "./resources";
-import { GameState } from "./game";
+import { GameState } from "./gamestateevent";
 
 export class Score extends ScreenElement {
   score;
@@ -8,6 +8,7 @@ export class Score extends ScreenElement {
   highscoreValue = BigInt(13456789); // TODO: use better names
   highscoreName = "BAS"; // TODO: use better names
   multiplierValue = BigInt(1);
+  isPlaying = true;
 
   constructor(car) {
     super({
@@ -69,11 +70,18 @@ export class Score extends ScreenElement {
     this.addChild(highscore);
 
     this.highscore = highscore;
+
+    engine.events.on("gameStateChange", (event) => {
+      if (event.gameState === GameState.GAMEOVER) {
+        this.isPlaying = false;
+      }
+    });
   }
 
   onPreUpdate(engine, delta) {
     // only achieve points while playing
-    if (engine.currentScene.gameState === GameState.PLAYING) {
+    // TODO: use delta, to avoid scoring depending on fps
+    if (this.isPlaying) {
       this.scoreValue += BigInt(Math.round(this.car.vel.y * -1)) * this.multiplierValue;
     }
 

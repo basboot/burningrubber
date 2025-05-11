@@ -1,11 +1,13 @@
 import { Actor, CollisionType, Keys, Vector } from "excalibur";
 import { CarSprites, Resources } from "./resources";
 import { Car } from "./car.js";
-import { GameState } from "./game.js";
+import { GameState } from "./gamestateevent.js";
 
 export class Player extends Car {
   jumping;
   jumpTime;
+  gameOver = false;
+  levelEnd = -13500;
 
   constructor(carType, initialPosition, initialVelocity, minSpeed, maxSpeed) {
     super(carType, initialPosition, initialVelocity, minSpeed, maxSpeed);
@@ -26,15 +28,22 @@ export class Player extends Car {
 
     this.z = 10;
 
+    engine.events.on("gameStateChange", (event) => {
+      if (event.gameState === GameState.GAMEOVER) {
+        this.gameOver = true;
+      }
+    });
+
     super.onInitialize(engine);
   }
 
   onPreUpdate(engine, delta) {
-    if (this.gameOver) {
-      engine.currentScene.gameState = GameState.GAME_OVER;
+    // TODO: this must not be hardcoded, but added to the level creation when level creation is dynamic
+    if (this.pos.y < this.levelEnd && !this.gameOver) {
+      engine.setGameState(GameState.GAMEOVER, true);
     }
 
-    if (engine.currentScene.gameState === GameState.PLAYING) {
+    if (!this.gameOver) {
       // console.log(this.pos);
       if (!this.jumping) {
         if (engine.input.keyboard.isHeld(Keys.ArrowUp)) {
@@ -74,5 +83,6 @@ export class Player extends Car {
   handleObstacleCollision() {
     this.kill();
     this.scene.addExplosion(this.pos, 0);
+    this.scene.engine.setGameState(GameState.GAMEOVER, false);
   }
 }

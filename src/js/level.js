@@ -8,11 +8,12 @@ import { EnemyCreator } from "./enemycreator.js";
 import { Explosion } from "./explosion.js";
 import { Speedometer } from "./speedometer.js";
 import { Score } from "./score.js";
-import { GameState } from "./game.js";
 import { GameOver } from "./gameover.js";
+import { SoundConfig } from "./soundconfig.js";
+import { GameState } from "./gamestateevent.js";
 
 export class Level extends Scene {
-  gameState = GameState.IDLE;
+  isPlaying = true;
 
   constructor() {
     super(); // Call the superclass constructor
@@ -20,7 +21,6 @@ export class Level extends Scene {
   }
 
   async onInitialize(engine) {
-    this.gameState = GameState.PLAYING;
     // Set the background color to grey
     this.backgroundColor = Color.Gray;
 
@@ -38,6 +38,9 @@ export class Level extends Scene {
 
     this.score = new Score(car);
     this.add(this.score);
+
+    this.soundConfig = new SoundConfig();
+    this.add(this.soundConfig);
 
     // Add road bars to the middle of the screen
     const barSpacing = 100; // Space between bars
@@ -71,6 +74,16 @@ export class Level extends Scene {
         engine.toggleEffect();
       }
     });
+
+    this.add(new GameOver());
+
+    engine.events.on("gameStateChange", (event) => {
+      if (event.gameState === GameState.GAMEOVER) {
+        this.isPlaying = false;
+      }
+    });
+
+    engine.setGameState(GameState.PLAYING);
   }
 
   async loadLevelLayout(filePath) {
@@ -104,7 +117,7 @@ export class Level extends Scene {
   getLanes(offset = 0) {
     const tileIndex = Math.floor(-this.player.pos.y / this.tileHeight);
 
-    return this.lanes[tileIndex];
+    return this.isPlaying ? this.lanes[tileIndex] : [50, 150, 250, 350, 450, 550, 650, 750];
   }
 
   addExplosion(pos, value) {
@@ -113,13 +126,5 @@ export class Level extends Scene {
     this.add(explosion);
     // TODO: create methods
     this.score.multiplierValue += BigInt(value);
-  }
-
-  onPreUpdate(engine, delta) {
-    if (this.gameState === GameState.PLAYING && this.player.gameOver === true) {
-      // TODO: check game over logic
-      this.gameState = GameState.GAME_OVER;
-      this.add(new GameOver());
-    }
   }
 }

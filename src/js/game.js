@@ -4,16 +4,12 @@ import { Resources, ResourceLoader } from "./resources.js";
 import { Level } from "./level.js";
 import { MusicPlayer } from "./musicPlayer.js";
 import { GameSound, GameSoundEvent } from "./gamesoundevent.js";
-
-export const GameState = Object.freeze({
-  IDLE: "idle",
-  PLAYING: "playing",
-  GAME_OVER: "game_over",
-});
+import { GameState, GameStateEvent } from "./gamestateevent.js";
 
 export class Game extends Engine {
   isEffectOn = false;
   isMusicOn = false;
+  gameState = GameState.INIT;
 
   constructor() {
     super({
@@ -30,6 +26,12 @@ export class Game extends Engine {
     this.start(ResourceLoader).then(() => this.startGame());
 
     // this.toggleDebug();
+  }
+
+  onInitialize(engine) {
+    engine.events.on("gameStateChange", (event) => {
+      this.gameState = event.gameState;
+    });
   }
 
   async startGame() {
@@ -58,6 +60,11 @@ export class Game extends Engine {
       "gameSoundChange",
       new GameSoundEvent(this.isEffectOn ? GameSound.EFFECT_ON : GameSound.EFFECT_OFF)
     );
+  }
+
+  setGameState(gameState, levelCompleted = false) {
+    console.log("GAMESTATECHANGE: ", gameState, levelCompleted);
+    this.events.emit("gameStateChange", new GameStateEvent(gameState, levelCompleted));
   }
 }
 
