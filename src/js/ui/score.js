@@ -81,9 +81,10 @@ export class Score extends ScreenElement {
 
   onPreUpdate(engine, delta) {
     // only achieve points while playing
-    // TODO: use delta, to avoid scoring depending on fps
     if (this.isPlaying) {
-      this.score += BigInt(Math.round(this.car.vel.y * -1)) * this.multiplierValue;
+      // delta is 16.6 when running 60fps
+      // TODO: reward driving faster?
+      this.score += BigInt(Math.round(this.car.vel.y * -1)) * this.multiplierValue * BigInt(Math.round(delta / 16));
     }
 
     if (this.score > this.highscore) {
