@@ -1,14 +1,12 @@
 import "../css/style.css";
 import { Engine, DisplayMode, SolverStrategy, Timer } from "excalibur";
 import { Resources, ResourceLoader } from "./resources.js";
-import { Level } from "./level.js";
-import { MusicPlayer } from "./musicPlayer.js";
-import { GameSound, GameSoundEvent } from "./gamesoundevent.js";
-import { GameState, GameStateEvent } from "./gamestateevent.js";
+import {GameState, GameStateEvent} from "./events/gamestateevent.js";
+import {GameSound, GameSoundEvent} from "./events/gamesoundevent.js";
+import {Level} from "./level/level.js";
 
 export class Game extends Engine {
   isEffectOn = false;
-  isMusicOn = false;
   gameState = GameState.INIT;
 
   constructor() {
@@ -22,7 +20,6 @@ export class Game extends Engine {
       },
     });
 
-    this.soundLevel = 0.5; // Default sound level (50%)
     this.start(ResourceLoader).then(() => this.startGame());
 
     // this.toggleDebug();
@@ -35,18 +32,6 @@ export class Game extends Engine {
   }
 
   async startGame() {
-    // Load the MIDI data
-    const response = await fetch("/music/popcorn1.json");
-    const midiData = await response.json();
-
-    // Initialize and play the music
-    const musicPlayer = new MusicPlayer(midiData);
-    musicPlayer.setVolume(this.soundLevel); // Set the initial sound level
-    if (false) {
-      // TODO: create better sounds
-      musicPlayer.play();
-    }
-
     const level = new Level(); // Create the Level scene
     this.add("level", level); // Add the scene to the game
     await this.goToScene("level"); // Switch to the Level scene

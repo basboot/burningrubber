@@ -1,8 +1,7 @@
 import { ImageSource, Sprite, Loader, FontSource, Sound } from "excalibur";
-import { SoundEffect } from "./soundeffect";
+import {SoundEffect} from "./effects/soundeffect.js";
 
 // Add your resources here
-// TODO: Add categories
 const Resources = {
   Fish: new ImageSource("images/fish.png"),
   Cars: new ImageSource("images/cars.png"),
