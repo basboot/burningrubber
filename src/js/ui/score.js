@@ -1,9 +1,10 @@
 import { Color, FontUnit, Label, Rectangle, ScreenElement, TextAlign, Vector } from "excalibur";
-import {Resources} from "../resources.js";
-import {GameState} from "../events/gamestateevent.js";
+import { Resources } from "../resources.js";
+import { GameState } from "../events/gamestateevent.js";
 
 export class Score extends ScreenElement {
   scoreLabel;
+  highscoreLabel;
   score = BigInt(0);
   highscore = BigInt(13456789);
   highscorePlayer = "BAS";
@@ -69,7 +70,7 @@ export class Score extends ScreenElement {
     });
     this.addChild(highscore);
 
-    this.highscore = highscore;
+    this.highscoreLabel = highscore;
 
     engine.events.on("gameStateChange", (event) => {
       if (event.gameState === GameState.GAMEOVER) {
@@ -88,10 +89,10 @@ export class Score extends ScreenElement {
     if (this.score > this.highscore) {
       this.highscore = this.score;
       this.highscorePlayer = "JIJ";
-      this.highscore.opacity = 1;
+      this.highscoreLabel.opacity = 1;
     }
     this.scoreLabel.text = `${this.score}`;
-    this.highscore.text = `${this.highscorePlayer} ${this.highscore}`;
+    this.highscoreLabel.text = `${this.highscorePlayer} ${this.highscore}`;
     this.multiplier.text = `x ${this.multiplierValue}`;
   }
 }
