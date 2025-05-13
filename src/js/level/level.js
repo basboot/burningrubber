@@ -1,17 +1,18 @@
-import {Color, Keys, Scene, Vector} from "excalibur";
-import {Player} from "../player/player.js";
-import {Speedometer} from "../ui/speedometer.js";
-import {Score} from "../ui/score.js";
-import {SoundConfig} from "../ui/soundconfig.js";
-import {RoadBar} from "../gameelements/road/roadbar.js";
-import {EnemyCreator} from "../enemy/enemycreator.js";
-import {GameState} from "../events/gamestateevent.js";
-import {Explosion} from "../effects/explosion.js";
-import {Obstacle} from "../gameelements/road/obstacle.js";
-import {GameOver} from "../ui/gameover.js";
+import { Color, Keys, Scene, Vector } from "excalibur";
+import { Player } from "../player/player.js";
+import { Speedometer } from "../ui/speedometer.js";
+import { Score } from "../ui/score.js";
+import { SoundConfig } from "../ui/soundconfig.js";
+import { RoadBar } from "../gameelements/road/roadbar.js";
+import { EnemyCreator } from "../enemy/enemycreator.js";
+import { GameState } from "../events/gamestateevent.js";
+import { Explosion } from "../effects/explosion.js";
+import { GameOver } from "../ui/gameover.js";
+import { Obstacle } from "../gameelements/road/obstacle.js";
 
 export class Level extends Scene {
   isPlaying = true;
+  lastRowAdded = 0;
 
   constructor() {
     super(); // Call the superclass constructor
@@ -60,8 +61,8 @@ export class Level extends Scene {
     };
 
     // Load the level configuration from a text file
-    const layout = await this.loadLevelLayout("config/level1.txt");
-    this.generateLevel(layout);
+    this.layout = await this.loadLevelLayout("config/level1.txt");
+    this.addRows(6);
 
     this.add(new EnemyCreator());
 
@@ -83,6 +84,19 @@ export class Level extends Scene {
     engine.setGameState(GameState.PLAYING);
   }
 
+  addRows(topRowNeeded) {
+    while (this.lastRowAdded < topRowNeeded) {
+      // add row
+      this.lastRowAdded++;
+      this.generateRow(this.lastRowAdded);
+    }
+  }
+
+  obstacleLeftScreen(row) {
+    console.log("obstacle left screen");
+    this.addRows(row + 6);
+  }
+
   async loadLevelLayout(filePath) {
     // Fetch the level configuration from the text file
     const response = await fetch(filePath);
@@ -90,31 +104,25 @@ export class Level extends Scene {
     return text.trim().split("\n"); // Split the layout into lines
   }
 
-  generateLevel(layout) {
-    layout.forEach((line, rowIndex) => {
-      const lanes = [];
-      const tiles = line.split(""); // Split the line into individual characters
+  generateRow(rowIndex) {
+    const tiles = this.layout[rowIndex].split(""); // Split the line into individual characters
 
-      tiles.forEach((tile, colIndex) => {
-        const x = colIndex * this.tileWidth; // Calculate the x position of the tile
-        const y = -rowIndex * this.tileHeight; // Calculate the y position of the tile
+    tiles.forEach((tile, colIndex) => {
+      const x = colIndex * this.tileWidth; // Calculate the x position of the tile
+      const y = -rowIndex * this.tileHeight; // Calculate the y position of the tile
 
-        if (tile === "G") {
-          // Add grass
-          const grass = new Obstacle(x, y, this.tileWidth, this.tileHeight);
-          this.add(grass);
-        } else if (tile === "R") {
-          lanes.push(x + this.tileWidth / 2);
-        }
-      });
-      this.lanes.push(lanes);
+      if (tile === "G") {
+        // Add grass
+        const grass = new Obstacle(x, y, this.tileWidth, this.tileHeight, rowIndex);
+        this.add(grass);
+      }
     });
   }
 
   getLanes(offset = 0) {
     const tileIndex = Math.floor(-this.player.pos.y / this.tileHeight);
 
-    return this.isPlaying ? this.lanes[tileIndex] : [50, 150, 250, 350, 450, 550, 650, 750];
+    return [50, 150, 250, 350, 450, 550, 650, 750];
   }
 
   addExplosion(pos, value) {
