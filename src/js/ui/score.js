@@ -6,7 +6,7 @@ export class Score extends ScreenElement {
   scoreLabel;
   highscoreLabel;
   score = BigInt(0);
-  highscore = BigInt(13456789);
+  highscore = BigInt(123456789);
   highscorePlayer = "BAS";
   multiplierValue = BigInt(1);
   isPlaying = true;

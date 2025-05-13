@@ -120,6 +120,7 @@ export class Level extends Scene {
   }
 
   getLanes(offset = 0) {
+    // TODO: fox or choose other strategy for steering
     const tileIndex = Math.floor(-this.player.pos.y / this.tileHeight);
 
     return [50, 150, 250, 350, 450, 550, 650, 750];
