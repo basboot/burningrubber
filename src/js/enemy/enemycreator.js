@@ -1,18 +1,13 @@
 import { Actor, Color, Entity, Timer, Vector } from "excalibur";
 import { EnemyCar } from "./enemycar.js";
-import {CAR_DATA} from "../resources.js";
+import { CAR_DATA } from "../resources.js";
 const classToWeight = [
   null, // index 0 not used
   5, // class 1: bikes
-  null, // class 2: (not used in this vehicle set)
-  500, // class 3: small cars (e.g. compact convertibles, basic figos)
-  600, // class 4: smaller off-roaders/crossovers (e.g. wranglers, sunny)
-  750, // class 5: mid-sized sedans and sporty coupes (e.g. bmw, lancer)
-  1000, // class 6: performance/sport sedans and coupes (e.g. mustang2, camaros)
-  1500, // class 7: pickups and small SUVs (e.g. pickups, some suvs)
-  2500, // class 8: larger SUVs and off-roaders (e.g. landcruisers, raptors)
-  5000, // class 9: trucks/tow trucks
-  100000, // class 10: dumptruck (the heaviest)
+  500, // class 2: small cars
+  1000, // class 3: player and midweight
+  2500, // class 4: heavy
+  100000, // class 5: dumptruck (the heaviest)
 ];
 
 export class EnemyCreator extends Actor {
