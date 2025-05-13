@@ -1,8 +1,9 @@
 import { Actor, clamp, CollisionType, DegreeOfFreedom, RotationType, Shape, vec } from "excalibur";
-import {CarSprites} from "../../resources.js";
-import {Obstacle} from "../road/obstacle.js";
+import { CarSprites } from "../../resources.js";
+import { Obstacle } from "../road/obstacle.js";
 
 export class Car extends Actor {
+  // TODO: is initial velocity (still) needed?
   constructor(carType, initialPosition, initialVelocity, minSpeed, maxSpeed) {
     super({ collisionType: CollisionType.Active });
     this.carType = carType; // Store the car type

@@ -4,11 +4,11 @@ import { Speedometer } from "../ui/speedometer.js";
 import { Score } from "../ui/score.js";
 import { SoundConfig } from "../ui/soundconfig.js";
 import { RoadBar } from "../gameelements/road/roadbar.js";
-import { EnemyCreator } from "../enemy/enemycreator.js";
 import { GameState } from "../events/gamestateevent.js";
 import { Explosion } from "../effects/explosion.js";
 import { GameOver } from "../ui/gameover.js";
 import { Obstacle } from "../gameelements/road/obstacle.js";
+import { createEnemyCar } from "../enemy/enemycreator.js";
 
 export class Level extends Scene {
   isPlaying = true;
@@ -64,8 +64,6 @@ export class Level extends Scene {
     this.layout = await this.loadLevelLayout("config/level1.txt");
     this.addRows(6);
 
-    this.add(new EnemyCreator());
-
     engine.input.keyboard.on("press", (e) => {
       if (e.key === Keys.S) {
         console.log("S key was pressed!");
@@ -108,13 +106,26 @@ export class Level extends Scene {
     const tiles = this.layout[rowIndex].split(""); // Split the line into individual characters
 
     tiles.forEach((tile, colIndex) => {
-      const x = colIndex * this.tileWidth; // Calculate the x position of the tile
-      const y = -rowIndex * this.tileHeight; // Calculate the y position of the tile
+      if (colIndex % 2 === 0) {
+        const x = (colIndex / 2) * this.tileWidth; // Halve the colIndex for even places
+        const y = -rowIndex * this.tileHeight; // Calculate the y position of the tile
 
-      if (tile === "G") {
-        // Add grass
-        const grass = new Obstacle(x, y, this.tileWidth, this.tileHeight, rowIndex);
-        this.add(grass);
+        if (tile === "G") {
+          // Add grass
+          const grass = new Obstacle(x, y, this.tileWidth, this.tileHeight, rowIndex);
+          this.add(grass);
+        }
+      } else {
+        const carClass = parseInt(tile);
+        if (carClass > 0) {
+          // add enemy cars
+          const x = (colIndex / 2) * this.tileWidth; // Halve the colIndex for even places
+          const y = -rowIndex * this.tileHeight; // Calculate the y position of the tile
+
+          console.log("enemy at", x, y);
+
+          this.add(createEnemyCar(carClass, new Vector(x, y)));
+        }
       }
     });
   }

@@ -10,67 +10,32 @@ const classToWeight = [
   100000, // class 5: dumptruck (the heaviest)
 ];
 
-export class EnemyCreator extends Actor {
-  constructor() {
-    super();
+const classToCars = [
+  [], // index 0 not used
+  [], // class 1: bikes
+  [], // class 2: small cars
+  [], // class 3: player and midweight
+  [], // class 4: heavy
+  [], // class 5: dumptruck (the heaviest)
+];
 
-    this.cars = Object.keys(CAR_DATA);
-    // remove player car from possible cars
-    // TODO: make configurable
-    this.cars = this.cars.filter((car) => car !== "camaro");
+// Populate classToCars with cars from CAR_DATA
+for (const [carName, carData] of Object.entries(CAR_DATA)) {
+  const carClass = carData.class;
+  if (classToCars[carClass]) {
+    classToCars[carClass].push(carName);
+  }
+}
 
-    this.lastEnemyInLane = [0, 0, 0, 0, 0, 0, 0];
+export function createEnemyCar(carClass, position) {
+  if (!classToCars[carClass] || classToCars[carClass].length === 0) {
+    throw new Error(`No cars available for class ${carClass}`);
   }
 
-  onInitialize(engine) {
-    // Create a timer that fires every 1 second (1000 ms) and repeats 5 times
-    const timer = new Timer({
-      randomRange: [0, 500],
-      interval: 500,
-      repeats: true,
-      action: () => {
-        this.spawnEnemy(engine);
-      },
-    });
+  const carType = classToCars[carClass][Math.floor(Math.random() * classToCars[carClass].length)];
+  // const carData = CAR_DATA[carType];
+  const mass = classToWeight[carClass];
 
-    this.scene.add(timer);
-
-    timer.start();
-
-    super.onInitialize(engine);
-  }
-
-  spawnEnemy(engine) {
-    const camera = this.scene.camera;
-    // TODO: check car size
-    const topOfScreen = camera.pos.y - this.scene.engine.screen.resolution.height / 2 - 50;
-
-    // TODO: create logic, now just spawn about once in a second
-    if (Math.random() < 1) {
-      const lane = Math.floor(Math.random() * 3);
-      // avoid spawning in same place
-      if (this.lastEnemyInLane[lane + 2] > topOfScreen + 50) {
-        // select carType and mass
-
-        const carType = this.cars[Math.floor(Math.random() * this.cars.length)];
-        const mass = classToWeight[CAR_DATA[carType].class];
-
-        const enemyCar = new EnemyCar(
-          new Vector(300 + 100 * lane, topOfScreen),
-          new Vector(0, -200),
-          300,
-          700,
-          carType,
-          mass
-        );
-
-        // Add the enemy car to the scene explicitly
-        // enemyCar._initialize(engine);
-        this.scene.add(enemyCar);
-
-        // Update last enemy position in the lane
-        this.lastEnemyInLane[lane + 2] = topOfScreen;
-      }
-    }
-  }
+  // TODO: base speed on weight
+  return new EnemyCar(position, Vector.Zero, 350, 700, carType, mass);
 }
