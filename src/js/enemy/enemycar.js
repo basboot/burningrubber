@@ -16,21 +16,27 @@ export class EnemyCar extends Car {
     this.lastError = 0;
     this.hitByPLayer = false;
     this.targetX = initialPosition.x;
+
+    // decide first direction based on parity of the type of the car
+    const asciiParity = carType.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0) % 2;
+
+    this.direction = asciiParity === 0 ? -1 : 1;
   }
 
   selectRandomLane(engine) {
     const lanes = engine.currentScene.getLanes();
     // try to randomly steer left or right
     if (lanes.length > 0) {
-      const direction = Math.random() < 0.5 ? -1 : 1;
-      if (lanes.includes(this.targetX + direction * engine.currentScene.tileWidth)) {
-        this.targetX += direction * engine.currentScene.tileWidth;
+      if (lanes.includes(this.targetX + this.direction * engine.currentScene.tileWidth)) {
+        this.targetX += this.direction * engine.currentScene.tileWidth;
       } else {
-        if (lanes.includes(this.targetX - direction * engine.currentScene.tileWidth)) {
-          this.targetX -= direction * engine.currentScene.tileWidth;
+        if (lanes.includes(this.targetX - this.direction * engine.currentScene.tileWidth)) {
+          this.targetX -= this.direction * engine.currentScene.tileWidth;
         }
       }
     }
+    // switch prefered direction after every possible move
+    this.direction *= -1;
   }
 
   onInitialize(engine) {

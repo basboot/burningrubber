@@ -45,15 +45,16 @@ export class Player extends Car {
 
     if (!this.gameOver) {
       // console.log(this.pos);
-      if (!this.jumping) {
-        if (engine.input.keyboard.isHeld(Keys.ArrowUp)) {
-          this.useThrottle();
-        }
-        if (engine.input.keyboard.isHeld(Keys.ArrowDown)) {
-          this.useBreak();
-        }
+      // if (!this.jumping) {
+      if (engine.input.keyboard.isHeld(Keys.ArrowUp)) {
+        this.useThrottle();
       }
+      if (engine.input.keyboard.isHeld(Keys.ArrowDown)) {
+        this.useBreak();
+      }
+      // }
       if (engine.input.keyboard.isHeld(Keys.ArrowLeft)) {
+        // because we remove the collider while jumping, physics do not work anymore, so use velocity instead of impulse
         if (!this.jumping) {
           this.steerLeft();
         } else {
