@@ -13,6 +13,7 @@ import { createEnemyCar } from "../enemy/enemycreator.js";
 export class Level extends Scene {
   isPlaying = true;
   lastRowAdded = 0;
+  road = [];
 
   constructor() {
     super(); // Call the superclass constructor
@@ -104,6 +105,7 @@ export class Level extends Scene {
 
   generateRow(rowIndex) {
     const tiles = this.layout[rowIndex].split(""); // Split the line into individual characters
+    const lanes = [];
 
     tiles.forEach((tile, colIndex) => {
       if (colIndex % 2 === 0) {
@@ -116,6 +118,8 @@ export class Level extends Scene {
           this.add(grass);
         }
       } else {
+        // add lane
+        lanes.push((colIndex / 2) * this.tileWidth);
         const carClass = parseInt(tile);
         if (carClass > 0) {
           // add enemy cars
@@ -128,13 +132,19 @@ export class Level extends Scene {
         }
       }
     });
+    this.road.push(lanes);
   }
 
   getLanes(offset = 0) {
-    // TODO: fox or choose other strategy for steering
-    const tileIndex = Math.floor(-this.player.pos.y / this.tileHeight);
-
-    return [50, 150, 250, 350, 450, 550, 650, 750];
+    // look half a tile forward
+    const tileIndex = Math.floor(-offset / this.tileHeight + 0.5);
+    if (tileIndex < this.road.length) {
+      console.log("return road lanes");
+      return this.road[tileIndex];
+    } else {
+      console.log("This part of the road does not exist (yet)", tileIndex, this.road.length);
+      return [];
+    }
   }
 
   addExplosion(pos, value) {

@@ -1,7 +1,7 @@
 import { Actor, CollisionType, Keys, Vector } from "excalibur";
-import {GameState} from "../events/gamestateevent.js";
-import {Car} from "../gameelements/car/car.js";
-import {Resources} from "../resources.js";
+import { GameState } from "../events/gamestateevent.js";
+import { Car } from "../gameelements/car/car.js";
+import { Resources } from "../resources.js";
 
 export class Player extends Car {
   jumping;

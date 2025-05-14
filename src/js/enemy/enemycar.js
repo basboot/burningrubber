@@ -1,9 +1,11 @@
 import { Actor, Keys, Timer, vec, Vector } from "excalibur";
 import { Player } from "tone";
-import {Car} from "../gameelements/car/car.js";
-import {Resources} from "../resources.js";
+import { Car } from "../gameelements/car/car.js";
+import { Resources } from "../resources.js";
 
 export class EnemyCar extends Car {
+  targetX;
+
   constructor(initialPosition, initialVelocity, minSpeed, maxSpeed, carType, mass) {
     super(carType, initialPosition, initialVelocity, minSpeed, maxSpeed);
 
@@ -13,10 +15,22 @@ export class EnemyCar extends Car {
 
     this.lastError = 0;
     this.hitByPLayer = false;
+    this.targetX = initialPosition.x;
   }
 
   selectRandomLane(engine) {
-    this.selectedLane = Math.floor(Math.random() * engine.currentScene.getLanes().length);
+    const lanes = engine.currentScene.getLanes();
+    // try to randomly steer left or right
+    if (lanes.length > 0) {
+      const direction = Math.random() < 0.5 ? -1 : 1;
+      if (lanes.includes(this.targetX + direction * engine.currentScene.tileWidth)) {
+        this.targetX += direction * engine.currentScene.tileWidth;
+      } else {
+        if (lanes.includes(this.targetX - direction * engine.currentScene.tileWidth)) {
+          this.targetX -= direction * engine.currentScene.tileWidth;
+        }
+      }
+    }
   }
 
   onInitialize(engine) {
@@ -67,7 +81,7 @@ export class EnemyCar extends Car {
           this.body.applyLinearImpulse(vec(0, -5000));
 
           const timer = new Timer({
-            interval: 10000,
+            interval: 2000,
             repeats: false,
             action: () => {
               this.canSteer = true;
@@ -77,7 +91,7 @@ export class EnemyCar extends Car {
           this.scene.add(timer);
 
           const timer2 = new Timer({
-            interval: 2000,
+            interval: 3000, // little longer than disabeling steer
             repeats: false,
             action: () => {
               this.hitByPLayer = false;
@@ -94,11 +108,11 @@ export class EnemyCar extends Car {
   }
 
   update(engine, delta) {
-    const lanes = this.scene.getLanes(); // Get all lanes
+    // const lanes = this.scene.getLanes(this.y); // Get all lanes
 
-    if (this.selectedLane > lanes.length - 1) {
-      this.selectedLane = lanes.length - 1;
-    }
+    // if (!lanes.includes(this.targetX)) {
+    //   this.selectRandomLane(engine);
+    // }
 
     // // Find the closest lane using reduce
     // const closestLane = lanes.reduce((closest, lane) => {
@@ -107,7 +121,7 @@ export class EnemyCar extends Car {
     //
     // const error = closestLane - this.pos.x;
 
-    const error = lanes[this.selectedLane] - this.pos.x;
+    const error = this.targetX - this.pos.x;
     const deltaError = error - this.lastError;
     this.lastError = error;
 
