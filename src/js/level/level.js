@@ -67,7 +67,6 @@ export class Level extends Scene {
 
     engine.input.keyboard.on("press", (e) => {
       if (e.key === Keys.S) {
-        console.log("S key was pressed!");
         engine.toggleEffect();
       }
     });
@@ -92,7 +91,6 @@ export class Level extends Scene {
   }
 
   obstacleLeftScreen(row) {
-    console.log("obstacle left screen");
     this.addRows(row + 6);
   }
 
@@ -126,8 +124,6 @@ export class Level extends Scene {
           const x = (colIndex / 2) * this.tileWidth; // Halve the colIndex for even places
           const y = -rowIndex * this.tileHeight; // Calculate the y position of the tile
 
-          console.log("enemy at", x, y);
-
           this.add(createEnemyCar(carClass, new Vector(x, y)));
         }
       }
@@ -139,10 +135,9 @@ export class Level extends Scene {
     // look half a tile forward
     const tileIndex = Math.floor(-offset / this.tileHeight + 0.5);
     if (tileIndex < this.road.length) {
-      console.log("return road lanes");
       return this.road[tileIndex];
     } else {
-      console.log("This part of the road does not exist (yet)", tileIndex, this.road.length);
+      // road not built yet (happens when spawning)
       return [];
     }
   }
